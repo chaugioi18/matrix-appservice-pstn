@@ -154,6 +154,9 @@ async function main() {
 
   let coolPhone = new jsSIP.UA(configuration);
 
+  //Starting the User Agent
+  coolPhone.start();
+
   coolPhone.on('connected', (e) => {
     console.log('jsSIP connected')
   });
@@ -170,8 +173,7 @@ async function main() {
     console.log('jsSIP registrationFailed')
   });
 
-  //Starting the User Agent
-  coolPhone.start();
+ 
 
   // await userAgent.start()
   // console.log('sip connected')
