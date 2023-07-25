@@ -146,7 +146,6 @@ appservice.on("room.event", async (roomId, event) => {
     }
 });
 async function main() {
-
     let socket = new WebSocketInterface('wss://192.168.16.53:5060')
     let configuration = {
         sockets: [socket],
@@ -157,7 +156,27 @@ async function main() {
     ua.on('connected', function (e) {
         console.log("WS connected")
     });
+    ua.start();
+    var eventHandlers = {
+        'progress': function(e) {
+            console.log('call is in progress');
+        },
+        'failed': function(e) {
+            console.log('call failed with cause: '+ e.data.cause);
+        },
+        'ended': function(e) {
+            console.log('call ended with cause: '+ e.data.cause);
+        },
+        'confirmed': function(e) {
+            console.log('call confirmed');
+        }
+    };
+    var options = {
+        'eventHandlers'    : eventHandlers,
+        'mediaConstraints' : { 'audio': true, 'video': true }
+    };
 
+    var session = ua.call('sip:02836222777@192.168.16.53:5060', options);
     // await userAgent.start()
     // console.log('sip connected')
 
