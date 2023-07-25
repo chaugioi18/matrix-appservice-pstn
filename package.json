@@ -13,6 +13,7 @@
   "dependencies": {
     "google-libphonenumber": "^3.2.23",
     "js-yaml": "^4.1.0",
+    "jssip": "^3.10.0",
     "jstoxml": "^2.2.4",
     "matrix-appservice": "^0.9.0",
     "matrix-bot-sdk": "^0.6.0-beta.2",
