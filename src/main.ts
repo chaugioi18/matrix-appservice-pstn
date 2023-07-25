@@ -5,6 +5,7 @@ import { createAppservice, getOrUploadAvatarUrl } from "./appservice";
 import { formatPhoneNumber } from './utils';
 import { APPSERVICE_CONFIG, COUNTRY_CODE } from './config';
 import { createUserAgent } from './sip';
+import { WebSocketInterface, UA }  from 'jssip';
 
 
 // mapping between Call-IDs and Call instances
@@ -16,7 +17,7 @@ const callMapping: {[callId: string]: Call} = {}
 async function onInvite(invitation: Invitation) {
     const matrixId = invitation.request.headers['X-Matrix-Id']?.[0]?.raw
     const callId = invitation.request.callId
-    
+
     // prepend contry code?
     let from = invitation.request.from.displayName
     if(from.startsWith('0') && !from.startsWith('00')) {
@@ -37,7 +38,7 @@ async function onInvite(invitation: Invitation) {
         return
     }
 
-    // get or create intent  
+    // get or create intent
     const intent = appservice.getIntentForSuffix(from)
     await intent.ensureRegistered()
     await intent.underlyingClient.setDisplayName(formatPhoneNumber(from));
@@ -76,6 +77,7 @@ async function onInvite(invitation: Invitation) {
 }
 
 const userAgent = createUserAgent(onInvite)
+
 const appservice = createAppservice(APPSERVICE_CONFIG)
 
 appservice.on("room.event", async (roomId, event) => {
@@ -87,7 +89,7 @@ appservice.on("room.event", async (roomId, event) => {
     }
 
     console.log(`Received event ${event["event_id"]} (${event["type"]}) from ${event["sender"]} in ${roomId}`);
-    
+
     const matrixId = event.sender
     const callId = event.content?.call_id
 
@@ -134,7 +136,7 @@ appservice.on("room.event", async (roomId, event) => {
                 if(!call) return
                 call.hangup()
                 break
-            
+
             case 'm.room.message':
                 console.log(`Received message ${event["event_id"]} from ${event["sender"]} in ${roomId}: ${event["content"]["body"]}`);
             }
@@ -144,11 +146,23 @@ appservice.on("room.event", async (roomId, event) => {
     }
 });
 async function main() {
-    await userAgent.start()
-    console.log('sip connected')
 
-    await appservice.begin()   
-    console.log('appservice is up!') 
+    let socket = new WebSocketInterface('wss://192.168.16.53:5060')
+    let configuration = {
+        sockets: [socket],
+        uri: 'sip:02836222777@192.168.16.53:5060'
+    }
+
+    let ua = new UA(configuration);
+    ua.on('connected', function (e) {
+        console.log("WS connected")
+    });
+
+    // await userAgent.start()
+    // console.log('sip connected')
+
+    await appservice.begin()
+    console.log('appservice is up!')
 }
 
 main()
