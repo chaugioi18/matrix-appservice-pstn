@@ -41,6 +41,7 @@ appservice.on("room.event", async (roomId, event) => {
 
     let call: Call
     try {
+        console.log("Event " + event["type"])
         switch(event["type"]) {
 
             // Invite to a new call by the matrix user

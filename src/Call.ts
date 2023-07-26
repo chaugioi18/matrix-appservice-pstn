@@ -79,6 +79,7 @@ export default class Call extends EventEmitter {
      * forward the matrix call including the SDP towards freeswitch
      */
     private async inviteSIP(sdp: string, matrixId: string, number: string) {
+        console.log("Call to SIP")
         if(!this.sipUA.isConnected()) {
             this.hangup()
             return
