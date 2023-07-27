@@ -20,7 +20,7 @@ const userAgent = new UA(configuration);
 const appservice = createAppservice(APPSERVICE_CONFIG)
 console.log('Appservice start handle room event')
 appservice.on("room.event", async (roomId, event) => {
-
+    console.log("START EVENT")
     // is it a event sent by the appservice?
     if(appservice.getSuffixForUserId(event["sender"])) {
         // ignore
