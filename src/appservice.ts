@@ -48,13 +48,6 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
         return (appservice as any).handleThirdpartyObject(req, res, "user", req.query["userid"] as string);
     });
 
-    appservice.expressAppInstance.put("/_matrix/app/unstable/rooms/:roomId/send/:event/:eventId", (req, res) => {
-        // allow unauthenticated requests
-        req.query["access_token"] = options.registration.hs_token
-        console.log("Room event called")
-        return (appservice as any).handleThirdpartyObject(req, res, "user", req.query["userid"] as string);
-    });
-
     appservice.on('thirdparty.user.remote', async (protocol, fields, cb) => {
         console.log(`Received ${protocol} remote query`, fields);
         switch(protocol) {
@@ -134,6 +127,14 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
 
     appservice.on("room.leave", (roomId, leaveEvent) => {
         console.log(`Left ${roomId} as ${leaveEvent["state_key"]}`);
+    });
+
+    appservice.on("room.message", (roomId, event) => {
+        console.log("Room message start")
+        if (! event["content"]) return;
+        const sender = event["sender"];
+        const body = event["content"]["body"];
+        console.log(`${roomId}: ${sender} says '${body}`);
     });
 
     return appservice
