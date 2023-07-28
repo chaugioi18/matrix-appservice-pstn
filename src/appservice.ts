@@ -81,7 +81,7 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
             case 'im.vector.protocol.sip_native':
                 cb([
                     {
-                        userid: fields['virtual_mxid'],
+                        // userid: fields['virtual_mxid'],
                         protocol: 'im.vector.protocol.sip_native',
                         fields: {
                             lookup_success: true,
