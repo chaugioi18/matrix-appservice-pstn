@@ -58,7 +58,6 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
     });
     appservice.on('thirdparty.protocol', async (protocol, fields, cb) => {
         console.log(`Received ${protocol} protocol query`, fields);
-        cb()
     })
 
     appservice.on('thirdparty.user.remote', async (protocol, fields, cb) => {
