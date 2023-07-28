@@ -32,7 +32,16 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
     AutojoinRoomsMixin.setupOnAppservice(appservice);
 
     // add missing API routes
-    appservice.expressAppInstance.get("/_matrix/app/v1/thirdparty/protocol/:protocol", (req, res) => {
+    appservice.expressAppInstance.put("/_matrix/app/v1/transactions/:txnId", (req, res) => {
+        console.log("On Transaction")
+        return (appservice as any).onTransaction(req, res);
+    });
+    appservice.expressAppInstance.put("/_matrix/app/v1/rooms/:room", (req, res) => {
+        console.log("On Room")
+        return (appservice as any).onRoomAlias(req, res);
+    });
+
+    appservice.expressAppInstance.get("/_matrix/app/unstable/thirdparty/protocol/:protocol", (req, res) => {
         res.status(200).json({
             user_fields: [],
             location_fields: [],
@@ -41,7 +50,7 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
             instances: []
         });
     })
-    appservice.expressAppInstance.get("/_matrix/app/v1/thirdparty/user/:protocol", (req, res) => {
+    appservice.expressAppInstance.get("/_matrix/app/unstable/thirdparty/user/:protocol", (req, res) => {
         // allow unauthenticated requests
         req.query["access_token"] = options.registration.hs_token
 
@@ -112,6 +121,7 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
     });
 
     appservice.on("query.room", (roomAlias, createRoom) => {
+        console.log("Query room")
         createRoom(false);
     });
 
@@ -130,7 +140,6 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
     });
 
     appservice.on("room.message", (roomId, event) => {
-        console.log("Room message start")
         if (! event["content"]) return;
         const sender = event["sender"];
         const body = event["content"]["body"];
