@@ -10,8 +10,3 @@ export const COUNTRY_CODE = config.country_code
 export const APPSERVICE_CONFIG: IAppserviceOptions = Object.assign(config.appservice, {
     registration: registration
 })
-
-export type IGateway = {[key: string]: string|number|boolean}
-export type IUserMapping = {in: string, out: string}
-export const GATEWAYS: {[name: string]: IGateway} = config.gateways
-export const USER_MAPPING: {[matrixId: string]: IUserMapping} = config.usermapping
