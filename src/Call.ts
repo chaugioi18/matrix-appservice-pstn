@@ -80,10 +80,10 @@ export default class Call extends EventEmitter {
      */
     private async inviteSIP(sdp: string, matrixId: string, number: string) {
         console.log("Call to SIP")
-        if(!this.sipUA.isConnected()) {
-            this.hangup()
-            return
-        }
+        // if(!this.sipUA.isConnected()) {
+        //     this.hangup()
+        //     return
+        // }
         const target = new URI('sip', '02836222777', '192.168.16.53', 5060);
         this.sipUA.call(target.toAor())
         console.log('invited')
