@@ -33,11 +33,11 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
 
     // add missing API routes
     appservice.expressAppInstance.put("/_matrix/app/v1/transactions/:txnId", (req, res) => {
-        console.log("On Transaction")
+        console.log(`On Transaction`)
         return (appservice as any).onTransaction(req, res);
     });
     appservice.expressAppInstance.put("/_matrix/app/v1/rooms/:room", (req, res) => {
-        console.log("On Room")
+        console.log(`On Room`)
         return (appservice as any).onRoomAlias(req, res);
     });
 
@@ -124,7 +124,7 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
     });
 
     appservice.on("query.room", (roomAlias, createRoom) => {
-        console.log("Query room")
+        console.log(`Query room`)
         createRoom(false);
     });
 
@@ -143,6 +143,7 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
     });
 
     appservice.on("room.message", (roomId, event) => {
+        console.log(`Room message`)
         if (! event["content"]) return;
         const sender = event["sender"];
         const body = event["content"]["body"];
