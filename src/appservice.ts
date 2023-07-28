@@ -56,6 +56,10 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
 
         return (appservice as any).handleThirdpartyObject(req, res, "user", req.query["userid"] as string);
     });
+    appservice.on('thirdparty.protocol', async (protocol, fields, cb) => {
+        console.log(`Received ${protocol} protocol query`, fields);
+        cb()
+    })
 
     appservice.on('thirdparty.user.remote', async (protocol, fields, cb) => {
         console.log(`Received ${protocol} remote query`, fields);
