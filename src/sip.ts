@@ -4,11 +4,8 @@ import { Registerer, UserAgent, Invitation } from "sip.js";
 import SessionDescriptionHandler from './SessionDescriptionHandler';
 
 const userAgent = new UserAgent({
-    uri: UserAgent.makeURI("sip:1000@freeswitch"),
-    authorizationUsername: '1000',
-    authorizationPassword: 'HelloWorld',
     transportOptions: {
-        server: "ws://127.0.0.1:5066",
+        server: "wss://192.168.16.53:5060",
     },
     sessionDescriptionHandlerFactory: (session, options) => {
         return new SessionDescriptionHandler()
@@ -46,7 +43,7 @@ export function createUserAgent(onInvite: (invitation: Invitation) => Promise<vo
             } catch(err) {
                 console.log('ERROR', err.body)
             }
-            
+
         },
         async onDisconnect(err: Error) {
             if (err) {
