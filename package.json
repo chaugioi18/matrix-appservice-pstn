@@ -16,7 +16,7 @@
     "jssip": "^3.10.0",
     "jstoxml": "^2.2.4",
     "matrix-appservice": "^0.9.0",
-    "matrix-bot-sdk": "^0.6.0-beta.2",
+    "matrix-bot-sdk": "^0.6.6",
     "matrix-js-sdk": "^12.4.0",
     "morgan": "^1.10.0",
     "sip.js": "0.16.0",
