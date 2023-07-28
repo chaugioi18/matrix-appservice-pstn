@@ -16,7 +16,7 @@ export default class Call extends EventEmitter {
         this.sipUA = sipUA
         this.roomId = roomId
         this.intent = intent
-        console.log(`[${this.callId}] created`)
+        console.log(`[${this.callId}] [${this.sipUA}] created`)
     }
 
     /**
@@ -79,7 +79,7 @@ export default class Call extends EventEmitter {
      * forward the matrix call including the SDP towards freeswitch
      */
     private async inviteSIP(sdp: string, matrixId: string, number: string) {
-        console.log("Call to SIP")
+        console.log(`[${this.sipUA}] Call to SIP`)
         // if(!this.sipUA.isConnected()) {
         //     this.hangup()
         //     return
