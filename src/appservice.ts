@@ -32,7 +32,7 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
     AutojoinRoomsMixin.setupOnAppservice(appservice);
 
     // add missing API routes
-    appservice.expressAppInstance.get("/_matrix/app/unstable/thirdparty/protocol/:protocol", (req, res) => {
+    appservice.expressAppInstance.get("/_matrix/app/v1/thirdparty/protocol/:protocol", (req, res) => {
         res.status(200).json({
             user_fields: [],
             location_fields: [],
@@ -41,7 +41,7 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
             instances: []
         });
     })
-    appservice.expressAppInstance.get("/_matrix/app/unstable/thirdparty/user/:protocol", (req, res) => {
+    appservice.expressAppInstance.get("/_matrix/app/v1/thirdparty/user/:protocol", (req, res) => {
         // allow unauthenticated requests
         req.query["access_token"] = options.registration.hs_token
 
