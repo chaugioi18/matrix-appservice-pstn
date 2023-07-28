@@ -48,6 +48,13 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
         return (appservice as any).handleThirdpartyObject(req, res, "user", req.query["userid"] as string);
     });
 
+    appservice.expressAppInstance.get("/_matrix/app/unstable/rooms/:roomId/send/:event", (req, res) => {
+        // allow unauthenticated requests
+        req.query["access_token"] = options.registration.hs_token
+
+        return (appservice as any).handleThirdpartyObject(req, res, "user", req.query["userid"] as string);
+    });
+
     appservice.on('thirdparty.user.remote', async (protocol, fields, cb) => {
         console.log(`Received ${protocol} remote query`, fields);
         switch(protocol) {
