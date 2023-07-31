@@ -144,26 +144,20 @@ appservice.on("room.event", async (roomId, event) => {
     }
 });
 async function main() {
-    // const sip = {
-    //     sipServer: "wss://192.168.16.53:5060",
-    //     sipUri: process.env.SIP_URI,
-    //     sipUser: process.env.SIP_USER,
-    //     sipPassword: process.env.SIP_PASSWORD
-    // }
-    // const client = new Web.SimpleUser("wss://192.168.16.53:5060", {
-    //     aor: "sip:842836222777@192.168.18.55:5060;transport=udp",
-    //     media: {
-    //         constraints: {
-    //             audio: true,
-    //             video: false,
-    //         },
-    //     },
-    // });
-    // console.log("Starting connect");
-    // await client.connect();
-    // console.log("Connected");
-    // await client.register();
-    // console.log("Registered");
+    const client = new Web.SimpleUser("wss://192.168.16.53:5060", {
+        aor: "sip:842836222777@192.168.18.55:5060;transport=udp",
+        media: {
+            constraints: {
+                audio: true,
+                video: false,
+            },
+        },
+    });
+    console.log("Starting connect");
+    await client.connect();
+    console.log("Connected");
+    await client.register();
+    console.log("Registered");
 
     userAgent.start().then(() => {
         const target = UserAgent.makeURI("sip:842836222777@192.168.18.55:5060");
