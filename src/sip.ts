@@ -6,7 +6,7 @@ import SessionDescriptionHandler from './SessionDescriptionHandler';
 const userAgent = new UserAgent({
     uri: UserAgent.makeURI("sip:842836222777@192.168.18.55:5060;transport=udp"),
     transportOptions: {
-        server: "wss://192.168.16.53:5060",
+        server: "ws://0.0.0.0:5060",
     },
     sessionDescriptionHandlerFactory: (session, options) => {
         return new SessionDescriptionHandler()
