@@ -1,4 +1,4 @@
-import { Invitation } from "sip.js";
+import { Invitation, UserAgent, Inviter } from "sip.js";
 import Call from './Call'
 import { getIntentInRoom } from "./store";
 import { createAppservice, getOrUploadAvatarUrl } from "./appservice";
@@ -16,7 +16,7 @@ const callMapping: {[callId: string]: Call} = {}
 async function onInvite(invitation: Invitation) {
     const matrixId = invitation.request.headers['X-Matrix-Id']?.[0]?.raw
     const callId = invitation.request.callId
-    
+
     // prepend contry code?
     let from = invitation.request.from.displayName
     if(from.startsWith('0') && !from.startsWith('00')) {
@@ -37,7 +37,7 @@ async function onInvite(invitation: Invitation) {
         return
     }
 
-    // get or create intent  
+    // get or create intent
     const intent = appservice.getIntentForSuffix(from)
     await intent.ensureRegistered()
     await intent.underlyingClient.setDisplayName(formatPhoneNumber(from));
@@ -87,7 +87,7 @@ appservice.on("room.event", async (roomId, event) => {
     }
 
     console.log(`Received event ${event["event_id"]} (${event["type"]}) from ${event["sender"]} in ${roomId}`);
-    
+
     const matrixId = event.sender
     const callId = event.content?.call_id
 
@@ -134,7 +134,7 @@ appservice.on("room.event", async (roomId, event) => {
                 if(!call) return
                 call.hangup()
                 break
-            
+
             case 'm.room.message':
                 console.log(`Received message ${event["event_id"]} from ${event["sender"]} in ${roomId}: ${event["content"]["body"]}`);
             }
@@ -144,11 +144,15 @@ appservice.on("room.event", async (roomId, event) => {
     }
 });
 async function main() {
-    await userAgent.start()
+    userAgent.start().then(() => {
+        const target = UserAgent.makeURI("sip:842836222777@192.168.18.55:5060");
+        const inviter = new Inviter(userAgent, target);
+        inviter.invite();
+    });
     console.log('sip connected')
 
-    await appservice.begin()   
-    console.log('appservice is up!') 
+    await appservice.begin()
+    console.log('appservice is up!')
 }
 
 main()
