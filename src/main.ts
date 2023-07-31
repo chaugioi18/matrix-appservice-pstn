@@ -1,4 +1,4 @@
-import { Invitation, UserAgent, Inviter } from "sip.js";
+import { Invitation, UserAgent, Inviter, Web } from "sip.js";
 import Call from './Call'
 import { getIntentInRoom } from "./store";
 import { createAppservice, getOrUploadAvatarUrl } from "./appservice";
@@ -144,12 +144,33 @@ appservice.on("room.event", async (roomId, event) => {
     }
 });
 async function main() {
-    userAgent.start().then(() => {
-        const target = UserAgent.makeURI("sip:842836222777@192.168.18.55:5060");
-        const inviter = new Inviter(userAgent, target);
-        inviter.invite();
+    const sip = {
+        sipServer: "wss://192.168.16.53:5060",
+        sipUri: process.env.SIP_URI,
+        sipUser: process.env.SIP_USER,
+        sipPassword: process.env.SIP_PASSWORD
+    }
+    const client = new Web.SimpleUser("wss://192.168.16.53:5060", {
+        aor: "sip:842836222777@192.168.18.55:5060;transport=udp",
+        media: {
+            constraints: {
+                audio: true,
+                video: false,
+            },
+        },
     });
-    console.log('sip connected')
+    console.log("Starting connect");
+    await client.connect();
+    console.log("Connected");
+    await client.register();
+    console.log("Registered");
+
+    // userAgent.start().then(() => {
+    //     const target = UserAgent.makeURI("sip:842836222777@192.168.18.55:5060");
+    //     const inviter = new Inviter(userAgent, target);
+    //     inviter.invite();
+    // });
+    // console.log('sip connected')
 
     await appservice.begin()
     console.log('appservice is up!')
