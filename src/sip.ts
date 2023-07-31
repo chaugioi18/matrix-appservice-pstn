@@ -4,9 +4,9 @@ import { Registerer, UserAgent, Invitation } from "sip.js";
 import SessionDescriptionHandler from './SessionDescriptionHandler';
 
 const userAgent = new UserAgent({
-    uri: UserAgent.makeURI("sip:842836222777@123.30.142.7"),
+    uri: UserAgent.makeURI("sip:1000@freeswitch"),
     transportOptions: {
-        server: "wss://192.168.16.53:5060",
+        server: "ws://127.0.0.1:5060",
     },
     sessionDescriptionHandlerFactory: (session, options) => {
         return new SessionDescriptionHandler()
