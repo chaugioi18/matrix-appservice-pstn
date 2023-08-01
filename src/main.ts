@@ -5,6 +5,9 @@ import { formatPhoneNumber } from './utils';
 import { APPSERVICE_CONFIG, COUNTRY_CODE } from './config';
 import { createUserAgent } from './sip';
 import { WebSocketInterface, UA }  from 'jssip';
+import { Peer } from 'peerjs';
+import { RTCPeerConnection, RTCSessionDescription, RTCIceCandidate } from 'wrtc';
+import { XMLHttpRequest } from 'xmlhttprequest';
 
 
 // mapping between Call-IDs and Call instances
@@ -48,6 +51,7 @@ appservice.on("room.event", async (roomId, event) => {
             case 'm.call.invite':
                 const sdp = event.content?.offer?.sdp
                 const number = appservice.getSuffixForUserId(intent.userId)
+
                 call = new Call(callId, roomId, intent, userAgent)
                 call.handleMatrixInvite(sdp, matrixId, number)
                 call.on('close' ,() => {
@@ -79,7 +83,6 @@ appservice.on("room.event", async (roomId, event) => {
     }
 });
 async function main() {
-
     userAgent.on('connected', function (e) {
         console.log("WS connected")
     });
