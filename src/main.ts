@@ -5,10 +5,12 @@ import { createAppservice, getOrUploadAvatarUrl } from "./appservice";
 import { formatPhoneNumber } from './utils';
 import { APPSERVICE_CONFIG, COUNTRY_CODE } from './config';
 import { createUserAgent } from './sip';
+import webrtcMediaFactory from './mediaStreams';
 
 
 // mapping between Call-IDs and Call instances
 const callMapping: {[callId: string]: Call} = {}
+const mediaStreams = new webrtcMediaFactory();
 
 /**
  * Called when we recieve an invite from freeswitch
@@ -152,7 +154,23 @@ async function main() {
                 video: false,
             },
         },
+        userAgentOptions: {
+            sessionDescriptionHandlerFactory: Web.defaultSessionDescriptionHandlerFactory(async () => {
+                return this.mediaStreams.invitingMediaStream;
+            })
+        },
     });
+    this.client.delegate = {
+
+        onCallAnswered: async () => {
+            try {
+                this.mediaStreams.setAudioTrack(this.client.remoteMediaStream, this.mediaStreams.answeringAudioSource);
+            } catch (e) {
+                console.error(e);
+                await this.client.disconnect();
+            }
+        },
+    };
     console.log("Starting connect");
     await client.connect();
     console.log("Connected");
