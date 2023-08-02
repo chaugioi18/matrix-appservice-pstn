@@ -155,9 +155,9 @@ async function main() {
             },
         },
         userAgentOptions: {
-            sessionDescriptionHandlerFactory: Web.defaultSessionDescriptionHandlerFactory(async () => {
+            sessionDescriptionHandlerFactory: (session, options) => {
                 return this.mediaStreams.invitingMediaStream;
-            })
+            }
         },
     });
     this.client.delegate = {
