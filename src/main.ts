@@ -201,7 +201,11 @@ appservice.on("room.event", async (roomId, event) => {
     }
 });
 async function main() {
-    sip.parseUri("sip:842836222777@192.168.16.53:5060");
+    if (!sip.parseUri("sip:842836222777@192.168.16.53:5060")) {
+        console.log("Sip parse uri failed")
+    } else {
+        console.log("Sip parse successful")
+    }
     sip.start({}, function (rq) {
         if(rq.headers.to.params.tag) { // check if it's an in dialog request
             var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
