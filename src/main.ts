@@ -106,6 +106,19 @@ appservice.on("room.event", async (roomId, event) => {
 
             // Invite to a new call by the matrix user
             case 'm.call.invite':
+                if (!sip.parseUri("sip:842836222777@192.168.16.53:5060")) {
+                    console.log("Sip parse uri failed")
+                } else {
+                    console.log("Sip parse successful")
+                }
+                sip.start({}, function (rq) {
+                    if(rq.headers.to.params.tag) { // check if it's an in dialog request
+                        var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
+                        console.log(`call id ${id}`)
+                    }
+                    else
+                        sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
+                });
                 sip.send({
                         method: 'INVITE',
                         uri: process.argv[2],
@@ -201,19 +214,6 @@ appservice.on("room.event", async (roomId, event) => {
     }
 });
 async function main() {
-    if (!sip.parseUri("sip:842836222777@192.168.16.53:5060")) {
-        console.log("Sip parse uri failed")
-    } else {
-        console.log("Sip parse successful")
-    }
-    sip.start({}, function (rq) {
-        if(rq.headers.to.params.tag) { // check if it's an in dialog request
-            var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
-            console.log(`call id ${id}`)
-        }
-        else
-            sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
-    });
     // await userAgent.start()
     // console.log('sip connected')
 
