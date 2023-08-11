@@ -98,6 +98,7 @@ appservice.on("room.event", async (roomId, event) => {
         console.error(`we could not find any way to participate in room ${roomId} after recieving an '${event.tye}' event`)
         return
     }
+    function rstring() { return Math.floor(Math.random()*1e6).toString(); }
 
     let call: Call
     try {
@@ -105,14 +106,69 @@ appservice.on("room.event", async (roomId, event) => {
 
             // Invite to a new call by the matrix user
             case 'm.call.invite':
-                const sdp = event.content?.offer?.sdp
-                const number = appservice.getSuffixForUserId(intent.userId)
-                call = new Call(callId, roomId, intent, userAgent)
-                call.handleMatrixInvite(sdp, matrixId, number)
-                call.on('close' ,() => {
-                    delete callMapping[callId]
-                })
-                callMapping[callId] = call
+                sip.send({
+                        method: 'INVITE',
+                        uri: process.argv[2],
+                        headers: {
+                            to: {uri: process.argv[2]},
+                            from: {uri: 'sip:842836222777@192.168.16.53:5060', params: {tag: rstring()}},
+                            'call-id': rstring(),
+                            cseq: {method: 'INVITE', seq: Math.floor(Math.random() * 1e5)},
+                            'content-type': 'application/sdp',
+                            contact: [{uri: 'sip:842836222777@192.168.16.53:5060'}]  // if your call doesnt get in-dialog request, maybe os.hostname() isn't resolving in your ip address
+                        },
+                        content:
+                            'v=0\r\n'+
+                            'o=- 13374 13374 IN IP4 172.16.2.2\r\n'+
+                            's=-\r\n'+
+                            'c=IN IP4 172.16.2.2\r\n'+
+                            't=0 0\r\n'+
+                            'm=audio 16424 RTP/AVP 0 8 101\r\n'+
+                            'a=rtpmap:0 PCMU/8000\r\n'+
+                            'a=rtpmap:8 PCMA/8000\r\n'+
+                            'a=rtpmap:101 telephone-event/8000\r\n'+
+                            'a=fmtp:101 0-15\r\n'+
+                            'a=ptime:30\r\n'+
+                            'a=sendrecv\r\n'
+                    },
+                    function(rs) {
+                        if(rs.status >= 300) {
+                            console.log('call failed with status ' + rs.status);
+                        }
+                        else if(rs.status < 200) {
+                            console.log('call progress status ' + rs.status);
+                        }
+                        else {
+                            // yes we can get multiple 2xx response with different tags
+                            console.log('call answered with tag ' + rs.headers.to.params.tag);
+
+                            // sending ACK
+                            sip.send({
+                                method: 'ACK',
+                                uri: rs.headers.contact[0].uri,
+                                headers: {
+                                    to: rs.headers.to,
+                                    from: rs.headers.from,
+                                    'call-id': rs.headers['call-id'],
+                                    cseq: {method: 'ACK', seq: rs.headers.cseq.seq},
+                                    via: []
+                                }
+                            });
+
+                            var id = [rs.headers['call-id'], rs.headers.from.params.tag, rs.headers.to.params.tag].join(':');
+
+                        }
+                    });
+                if (false) {
+                    const sdp = event.content?.offer?.sdp
+                    const number = appservice.getSuffixForUserId(intent.userId)
+                    call = new Call(callId, roomId, intent, userAgent)
+                    call.handleMatrixInvite(sdp, matrixId, number)
+                    call.on('close' ,() => {
+                        delete callMapping[callId]
+                    })
+                    callMapping[callId] = call
+                }
                 break
 
             // SDP candidates
