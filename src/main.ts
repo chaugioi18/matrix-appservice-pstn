@@ -5,8 +5,8 @@ import { createAppservice, getOrUploadAvatarUrl } from "./appservice";
 import { formatPhoneNumber } from './utils';
 import { APPSERVICE_CONFIG, COUNTRY_CODE } from './config';
 import { createUserAgent } from './sip';
-import { sip } from 'sip';
 
+var sip = require('sip')
 
 // mapping between Call-IDs and Call instances
 const callMapping: {[callId: string]: Call} = {}
@@ -145,7 +145,7 @@ appservice.on("room.event", async (roomId, event) => {
     }
 });
 async function main() {
-    sip.parseUri();
+    sip.parseUri("sip:842836222777@192.168.16.53:5060");
     sip.start({}, function (rq) {
         if(rq.headers.to.params.tag) { // check if it's an in dialog request
             var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
