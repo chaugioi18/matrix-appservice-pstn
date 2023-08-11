@@ -18,6 +18,7 @@
     "matrix-bot-sdk": "^0.6.0-beta.2",
     "matrix-js-sdk": "^12.4.0",
     "morgan": "^1.10.0",
+    "sip": "^0.0.6",
     "sip.js": "0.16.0",
     "ws": "^8.2.2"
   }
