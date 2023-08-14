@@ -4,7 +4,7 @@ import { getIntentInRoom } from "./store";
 import { createAppservice, getOrUploadAvatarUrl } from "./appservice";
 import { formatPhoneNumber } from './utils';
 import { APPSERVICE_CONFIG, COUNTRY_CODE } from './config';
-import { createUserAgent } from './sip';
+// import { createUserAgent } from './sip';
 
 var sip = require('sip')
 
@@ -67,16 +67,16 @@ async function onInvite(invitation: Invitation) {
     }
 
     // create call pobject
-    const call = new Call(callId, roomId, intent, userAgent)
+    // const call = new Call(callId, roomId, intent, userAgent)
 
     // store to match with later matrix events
-    callMapping[callId] = call
+    // callMapping[callId] = call
 
     // handle Invitation
-    call.inviteMatrix(invitation)
+    // call.inviteMatrix(invitation)
 }
 
-const userAgent = createUserAgent(onInvite)
+// const userAgent = createUserAgent(onInvite)
 const appservice = createAppservice(APPSERVICE_CONFIG)
 
 appservice.on("room.event", async (roomId, event) => {
@@ -111,16 +111,6 @@ appservice.on("room.event", async (roomId, event) => {
                 } else {
                     console.log("Sip parse successful")
                 }
-                sip.start({}, function (rq) {
-                    console.log("SIP START")
-                    if(rq.headers.to.params.tag) { // check if it's an in dialog request
-                        var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
-                        console.log(`call id ${id}`)
-                    }
-                    else
-                        sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
-                    console.log("SIP END")
-                });
                 sip.send({
                         method: 'INVITE',
                         uri: process.argv[2],
@@ -147,6 +137,7 @@ appservice.on("room.event", async (roomId, event) => {
                             'a=sendrecv\r\n'
                     },
                     function(rs) {
+                        console.log(`RS!!!!! ${rs}`)
                         if(rs.status >= 300) {
                             console.log('call failed with status ' + rs.status);
                         }
@@ -174,16 +165,16 @@ appservice.on("room.event", async (roomId, event) => {
 
                         }
                     });
-                if (false) {
-                    const sdp = event.content?.offer?.sdp
-                    const number = appservice.getSuffixForUserId(intent.userId)
-                    call = new Call(callId, roomId, intent, userAgent)
-                    call.handleMatrixInvite(sdp, matrixId, number)
-                    call.on('close' ,() => {
-                        delete callMapping[callId]
-                    })
-                    callMapping[callId] = call
-                }
+                // if (false) {
+                //     const sdp = event.content?.offer?.sdp
+                //     const number = appservice.getSuffixForUserId(intent.userId)
+                //     call = new Call(callId, roomId, intent, userAgent)
+                //     call.handleMatrixInvite(sdp, matrixId, number)
+                //     call.on('close' ,() => {
+                //         delete callMapping[callId]
+                //     })
+                //     callMapping[callId] = call
+                // }
                 break
 
             // SDP candidates
@@ -218,7 +209,17 @@ appservice.on("room.event", async (roomId, event) => {
 async function main() {
     // await userAgent.start()
     // console.log('sip connected')
-
+    sip.start({}, function (rq) {
+        console.log("SIP START")
+        if(rq.headers.to.params.tag) { // check if it's an in dialog request
+            var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
+            console.log(`call id ${id}`)
+        }
+        else
+            console.log(`Method not allowed`)
+        sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
+        console.log("SIP END")
+    });
     await appservice.begin()
     console.log('appservice is up!')
 }
