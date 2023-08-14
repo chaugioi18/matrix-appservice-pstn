@@ -93,11 +93,11 @@ appservice.on("room.event", async (roomId, event) => {
     const callId = event.content?.call_id
 
     // let's find an intent which is able to post in that room
-    const intent = await getIntentInRoom(roomId, appservice)
-    if(!intent) {
-        console.error(`we could not find any way to participate in room ${roomId} after recieving an '${event.type}' event`)
-        return
-    }
+    // const intent = await getIntentInRoom(roomId, appservice)
+    // if(!intent) {
+    //     console.error(`we could not find any way to participate in room ${roomId} after recieving an '${event.type}' event`)
+    //     return
+    // }
     function rstring() { return Math.floor(Math.random()*1e6).toString(); }
     function randnum() { Math.floor(Math.random() * 1e5) }
 
@@ -222,7 +222,7 @@ appservice.on("room.event", async (roomId, event) => {
             }
     } catch(err) {
         console.error(err)
-        intent.sendText(roomId, 'Error processing the call:\n'+err.message, 'm.notice')
+        // intent.sendText(roomId, 'Error processing the call:\n'+err.message, 'm.notice')
     }
 });
 var dialogs = {};
