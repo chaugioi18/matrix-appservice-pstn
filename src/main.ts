@@ -117,7 +117,7 @@ appservice.on("room.event", async (roomId, event) => {
                         method: 'INVITE',
                         uri: 'sip:842836222777@192.168.16.53:5060',
                         headers: {
-                            to: {uri: 'sip:842836222777@192.168.16.53:5060'},
+                            to: {uri: 'sip:842836222777@192.168.16.53:5060', params: {tag: rstring()}},
                             from: {uri: 'sip:mila2@synapse', params: {tag: rstring()}},
                             'call-id': rstring(),
                             cseq: {method: 'INVITE', seq: Math.floor(Math.random() * 1e5)},
@@ -228,7 +228,8 @@ async function main() {
     // console.log('sip connected')
     sip.start({}, function (rq) {
         console.log(`SIP START ${JSON.stringify(rq)}`)
-        if(rq.headers.to.params.tag) { // check if it's an in dialog request
+
+        if(rq.headers.to) { // check if it's an in dialog request
             var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
             if(dialogs[id])
                 dialogs[id](rq);
