@@ -162,7 +162,20 @@ appservice.on("room.event", async (roomId, event) => {
                             });
 
                             var id = [rs.headers['call-id'], rs.headers.from.params.tag, rs.headers.to.params.tag].join(':');
+                            if(!dialogs[id]) {
+                                dialogs[id] = function(rq) {
+                                    if(rq.method === 'BYE') {
+                                        console.log('call received bye');
 
+                                        delete dialogs[id];
+
+                                        sip.send(sip.makeResponse(rq, 200, 'Ok'));
+                                    }
+                                    else {
+                                        sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
+                                    }
+                                }
+                            }
                         }
                     });
                 // if (false) {
@@ -206,6 +219,8 @@ appservice.on("room.event", async (roomId, event) => {
         intent.sendText(roomId, 'Error processing the call:\n'+err.message, 'm.notice')
     }
 });
+var dialogs = {};
+
 async function main() {
     // await userAgent.start()
     // console.log('sip connected')
@@ -213,11 +228,16 @@ async function main() {
         console.log("SIP START")
         if(rq.headers.to.params.tag) { // check if it's an in dialog request
             var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
+            if(dialogs[id])
+                dialogs[id](rq);
+            else
+                sip.send(sip.makeResponse(rq, 481, "Call doesn't exists"));
             console.log(`call id ${id}`)
         }
-        else
+        else{
             console.log(`Method not allowed`)
-        sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
+            sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
+        }
         console.log("SIP END")
     });
     await appservice.begin()
