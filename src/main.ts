@@ -227,7 +227,7 @@ async function main() {
     // await userAgent.start()
     // console.log('sip connected')
     sip.start({}, function (rq) {
-        console.log("SIP START")
+        console.log(`SIP START ${JSON.stringify(rq)}`)
         if(rq.headers.to.params.tag) { // check if it's an in dialog request
             var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
             if(dialogs[id])
