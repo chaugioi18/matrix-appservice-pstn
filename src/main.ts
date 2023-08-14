@@ -115,7 +115,7 @@ appservice.on("room.event", async (roomId, event) => {
                     console.log("Sip parse successful")
                     console.log(`SIP ${sip}`)
                 }
-                let callId = event.content.call_id
+
                 sip.send({
                         method: 'INVITE',
                         uri: 'sip:842836222777@192.168.16.53:5060',
@@ -143,7 +143,7 @@ appservice.on("room.event", async (roomId, event) => {
                         //     'a=sendrecv\r\n'
                     },
                     function(rs) {
-                        console.log(`RS!!!!! ${rs}`)
+                        console.log(`RS!!!!! ${JSON.stringify(rs)}`)
                         if(rs.status >= 300) {
                             console.log('call failed with status ' + rs.status);
                         }
