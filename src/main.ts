@@ -127,7 +127,7 @@ appservice.on("room.event", async (roomId, event) => {
                             'content-type': 'application/sdp',
                             contact: [{uri: 'sip:mila2@192.168.18.55:5060'}]  // if your call doesnt get in-dialog request, maybe os.hostname() isn't resolving in your ip address
                         },
-                        content: event.offer.sdp,
+                        content: event.content.offer.sdp,
                         // content:
                         //     'v=0\r\n'+
                         //     'o=- SOUTHTELECOM 147852963 147852964 IN IP4 172.16.2.2\r\n'+
