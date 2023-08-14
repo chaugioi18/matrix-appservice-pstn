@@ -112,12 +112,14 @@ appservice.on("room.event", async (roomId, event) => {
                     console.log("Sip parse successful")
                 }
                 sip.start({}, function (rq) {
+                    console.log("SIP START")
                     if(rq.headers.to.params.tag) { // check if it's an in dialog request
                         var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
                         console.log(`call id ${id}`)
                     }
                     else
                         sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
+                    console.log("SIP END")
                 });
                 sip.send({
                         method: 'INVITE',
