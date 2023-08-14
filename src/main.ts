@@ -80,7 +80,7 @@ async function onInvite(invitation: Invitation) {
 const appservice = createAppservice(APPSERVICE_CONFIG)
 
 appservice.on("room.event", async (roomId, event) => {
-
+    console.log(`EVENTTTTTTTTTTTTT ${JSON.stringify(event)}`)
     // is it a event sent by the appservice?
     if(appservice.getSuffixForUserId(event["sender"])) {
         // ignore
@@ -95,7 +95,7 @@ appservice.on("room.event", async (roomId, event) => {
     // let's find an intent which is able to post in that room
     const intent = await getIntentInRoom(roomId, appservice)
     if(!intent) {
-        console.error(`we could not find any way to participate in room ${roomId} after recieving an '${event.tye}' event`)
+        console.error(`we could not find any way to participate in room ${roomId} after recieving an '${event.type}' event`)
         return
     }
     function rstring() { return Math.floor(Math.random()*1e6).toString(); }
