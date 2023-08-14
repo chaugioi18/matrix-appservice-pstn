@@ -115,30 +115,32 @@ appservice.on("room.event", async (roomId, event) => {
                     console.log("Sip parse successful")
                     console.log(`SIP ${sip}`)
                 }
+                let callId = event.content.call_id
                 sip.send({
                         method: 'INVITE',
                         uri: 'sip:842836222777@192.168.16.53:5060',
                         headers: {
                             to: {uri: 'sip:842836222777@192.168.16.53:5060', params: {tag: rstring()}},
                             from: {uri: 'sip:mila2@synapse', params: {tag: rstring()}},
-                            'call-id': rstring(),
+                            'call-id': callId,
                             cseq: {method: 'INVITE', seq: Math.floor(Math.random() * 1e5)},
                             'content-type': 'application/sdp',
                             contact: [{uri: 'sip:mila2@192.168.18.55:5060'}]  // if your call doesnt get in-dialog request, maybe os.hostname() isn't resolving in your ip address
                         },
-                        content:
-                            'v=0\r\n'+
-                            'o=- SOUTHTELECOM 147852963 147852964 IN IP4 172.16.2.2\r\n'+
-                            's=-\r\n'+
-                            'c=IN IP4 172.16.2.2\r\n'+
-                            't=0 0\r\n'+
-                            'm=audio 16424 RTP/AVP 0 8 101\r\n'+
-                            'a=rtpmap:0 PCMU/8000\r\n'+
-                            'a=rtpmap:8 PCMA/8000\r\n'+
-                            'a=rtpmap:101 telephone-event/8000\r\n'+
-                            'a=fmtp:101 0-15\r\n'+
-                            'a=ptime:30\r\n'+
-                            'a=sendrecv\r\n'
+                        content: event.offer.sdp,
+                        // content:
+                        //     'v=0\r\n'+
+                        //     'o=- SOUTHTELECOM 147852963 147852964 IN IP4 172.16.2.2\r\n'+
+                        //     's=-\r\n'+
+                        //     'c=IN IP4 172.16.2.2\r\n'+
+                        //     't=0 0\r\n'+
+                        //     'm=audio 16424 RTP/AVP 0 8 101\r\n'+
+                        //     'a=rtpmap:0 PCMU/8000\r\n'+
+                        //     'a=rtpmap:8 PCMA/8000\r\n'+
+                        //     'a=rtpmap:101 telephone-event/8000\r\n'+
+                        //     'a=fmtp:101 0-15\r\n'+
+                        //     'a=ptime:30\r\n'+
+                        //     'a=sendrecv\r\n'
                     },
                     function(rs) {
                         console.log(`RS!!!!! ${rs}`)
