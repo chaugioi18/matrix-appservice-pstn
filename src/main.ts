@@ -106,6 +106,7 @@ appservice.on("room.event", async (roomId, event) => {
 
             // Invite to a new call by the matrix user
             case 'm.call.invite':
+                sip = sip.parseUri("sip:842836222777@192.168.16.53:5060");
                 if (!sip.parseUri("sip:842836222777@192.168.16.53:5060")) {
                     console.log("Sip parse uri failed")
                 } else {
