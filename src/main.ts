@@ -99,6 +99,7 @@ appservice.on("room.event", async (roomId, event) => {
         return
     }
     function rstring() { return Math.floor(Math.random()*1e6).toString(); }
+    function randnum() { Math.floor(Math.random() * 1e5) }
 
     let call: Call
     try {
@@ -106,6 +107,7 @@ appservice.on("room.event", async (roomId, event) => {
 
             // Invite to a new call by the matrix user
             case 'm.call.invite':
+                console.log(`EVENT ${JSON.stringify(event)}`)
                 // sip = sip.parseUri("sip:842836222777@192.168.16.53:5060");
                 if (!sip.parseUri("sip:842836222777@192.168.16.53:5060")) {
                     console.log("Sip parse uri failed")
@@ -126,7 +128,7 @@ appservice.on("room.event", async (roomId, event) => {
                         },
                         content:
                             'v=0\r\n'+
-                            'o=- 13374 13374 IN IP4 172.16.2.2\r\n'+
+                            'o=- SOUTHTELECOM 147852963 147852964 IN IP4 172.16.2.2\r\n'+
                             's=-\r\n'+
                             'c=IN IP4 172.16.2.2\r\n'+
                             't=0 0\r\n'+
