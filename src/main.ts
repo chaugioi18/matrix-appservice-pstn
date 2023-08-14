@@ -118,11 +118,11 @@ appservice.on("room.event", async (roomId, event) => {
                         uri: 'sip:842836222777@192.168.16.53:5060',
                         headers: {
                             to: {uri: 'sip:842836222777@192.168.16.53:5060'},
-                            from: {uri: 'sip:842836222777@192.168.16.53:5060', params: {tag: rstring()}},
+                            from: {uri: 'sip:mila2@synapse', params: {tag: rstring()}},
                             'call-id': rstring(),
                             cseq: {method: 'INVITE', seq: Math.floor(Math.random() * 1e5)},
                             'content-type': 'application/sdp',
-                            contact: [{uri: 'sip:842836222777@192.168.16.53:5060'}]  // if your call doesnt get in-dialog request, maybe os.hostname() isn't resolving in your ip address
+                            contact: [{uri: 'sip:mila2@192.168.18.55:5060'}]  // if your call doesnt get in-dialog request, maybe os.hostname() isn't resolving in your ip address
                         },
                         content:
                             'v=0\r\n'+
