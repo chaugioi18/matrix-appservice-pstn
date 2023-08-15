@@ -122,7 +122,8 @@ appservice.on("room.event", async (roomId, event) => {
                     console.log("Sip parse successful")
                     console.log(`SIP ${sip}`)
                 }
-
+                let sdp = event.content.offer.sdp
+                sdp = sdp.replace("IN IP4 0.0.0.0", "IN IP4 192.168.18.55")
                 sip.send({
                         method: 'INVITE',
                         uri: 'sip:0397196737@192.168.16.53:5060',
@@ -134,7 +135,7 @@ appservice.on("room.event", async (roomId, event) => {
                             'content-type': 'application/sdp',
                             contact: [{uri: 'sip:842836222777@192.168.18.55:5060'}]  // if your call doesnt get in-dialog request, maybe os.hostname() isn't resolving in your ip address
                         },
-                        content: event.content.offer.sdp,
+                        content: sdp,
                         // content:
                         //     'v=0\r\n'+
                         //     'o=- SOUTHTELECOM 147852963 147852964 IN IP4 172.16.2.2\r\n'+
