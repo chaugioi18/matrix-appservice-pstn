@@ -127,12 +127,12 @@ appservice.on("room.event", async (roomId, event) => {
                         method: 'INVITE',
                         uri: 'sip:842836222777@192.168.16.53:5060',
                         headers: {
-                            to: {uri: 'sip:842836222777@192.168.16.53:5060', params: {tag: rstring()}},
-                            from: {uri: 'sip:mila2@synapse', params: {tag: rstring()}},
+                            to: {uri: 'sip:84397196737@192.168.16.53', params: {tag: rstring()}},
+                            from: {uri: 'sip:842836222777@192.168.18.55:5060', params: {tag: rstring()}},
                             'call-id': callId,
                             cseq: {method: 'INVITE', seq: Math.floor(Math.random() * 1e5)},
                             'content-type': 'application/sdp',
-                            contact: [{uri: 'sip:mila2@192.168.18.55:5060'}]  // if your call doesnt get in-dialog request, maybe os.hostname() isn't resolving in your ip address
+                            contact: [{uri: 'sip:842836222777@192.168.18.55:5060'}]  // if your call doesnt get in-dialog request, maybe os.hostname() isn't resolving in your ip address
                         },
                         content: event.content.offer.sdp,
                         // content:
@@ -247,23 +247,23 @@ var dialogs = {};
 async function main() {
     // await userAgent.start()
     // console.log('sip connected')
-    // sip.start({}, function (rq) {
-    //     console.log(`SIP START ${JSON.stringify(rq)}`)
-    //     sip.send(sip.makeResponse(rq, 200, "OK"));
-    //     // if(rq.headers.to) { // check if it's an in dialog request
-    //     //     var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
-    //     //     if(dialogs[id])
-    //     //         dialogs[id](rq);
-    //     //     else
-    //     //         sip.send(sip.makeResponse(rq, 481, "Call doesn't exists"));
-    //     //     console.log(`call id ${id}`)
-    //     // }
-    //     // else{
-    //     //     console.log(`Method not allowed`)
-    //     //     sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
-    //     // }
-    //     console.log("SIP END")
-    // });
+    sip.start({}, function (rq) {
+        console.log(`SIP START ${JSON.stringify(rq)}`)
+        sip.send(sip.makeResponse(rq, 200, "OK"));
+        // if(rq.headers.to) { // check if it's an in dialog request
+        //     var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
+        //     if(dialogs[id])
+        //         dialogs[id](rq);
+        //     else
+        //         sip.send(sip.makeResponse(rq, 481, "Call doesn't exists"));
+        //     console.log(`call id ${id}`)
+        // }
+        // else{
+        //     console.log(`Method not allowed`)
+        //     sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
+        // }
+        console.log("SIP END")
+    });
     proxy.start({
             logger: {
                 recv: function (m) {
