@@ -277,12 +277,8 @@ async function main() {
                 }
             }
         }, function (rq) {
-            if (rq.method === 'OPTION') {
-                var rs = sip.makeResponse(rq, 200, 'Ok');
-                proxy.send(rs);
-            } else {
-                proxy.send(sip.makeResponse(rq, 200, 'OK'));
-            }
+            var rs = sip.makeResponse(rq, 200, 'Ok');
+            proxy.send(rs);
         }
     )
     await appservice.begin()
