@@ -124,6 +124,7 @@ appservice.on("room.event", async (roomId, event) => {
                 }
                 let sdp = event.content.offer.sdp
                 sdp = sdp.replace("IN IP4 0.0.0.0", "IN IP4 192.168.18.55")
+                sdp = sdp.replace("IN IP4 127.0.0.1", "IN IP4 192.168.18.55")
                 sip.send({
                         method: 'INVITE',
                         uri: 'sip:0397196737@192.168.16.53:5060',
