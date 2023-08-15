@@ -93,11 +93,11 @@ appservice.on("room.event", async (roomId, event) => {
     const callId = event.content?.call_id
 
     // let's find an intent which is able to post in that room
-    // const intent = await getIntentInRoom(roomId, appservice)
-    // if(!intent) {
-    //     console.error(`we could not find any way to participate in room ${roomId} after recieving an '${event.type}' event`)
-    //     return
-    // }
+    const intent = await getIntentInRoom(roomId, appservice)
+    if(!intent) {
+        console.error(`we could not find any way to participate in room ${roomId} after recieving an '${event.type}' event`)
+        return
+    }
     function rstring() { return Math.floor(Math.random()*1e6).toString(); }
     function randnum() { Math.floor(Math.random() * 1e5) }
 
@@ -153,7 +153,20 @@ appservice.on("room.event", async (roomId, event) => {
                         else {
                             // yes we can get multiple 2xx response with different tags
                             console.log('call answered with tag ' + rs.headers.to.params.tag);
-
+                            // const content = {
+                            //     answer: {
+                            //         sdp,
+                            //         type: 'answer'
+                            //     },
+                            //     capabilities: {
+                            //         "m.call.transferee": false,
+                            //         "m.call.dtmf": false // TODO: handle DTMF
+                            //     },
+                            //     call_id: this.callId,
+                            //     // party_id: client.deviceId,
+                            //     version: 1
+                            // }
+                            intent.underlyingClient.sendEvent(this.roomId, "m.call.answer", content)
                             // sending ACK
                             sip.send({
                                 method: 'ACK',
@@ -232,19 +245,19 @@ async function main() {
     // console.log('sip connected')
     sip.start({}, function (rq) {
         console.log(`SIP START ${JSON.stringify(rq)}`)
-
-        if(rq.headers.to) { // check if it's an in dialog request
-            var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
-            if(dialogs[id])
-                dialogs[id](rq);
-            else
-                sip.send(sip.makeResponse(rq, 481, "Call doesn't exists"));
-            console.log(`call id ${id}`)
-        }
-        else{
-            console.log(`Method not allowed`)
-            sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
-        }
+        sip.send(sip.makeResponse(rq, 200, "OK"));
+        // if(rq.headers.to) { // check if it's an in dialog request
+        //     var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
+        //     if(dialogs[id])
+        //         dialogs[id](rq);
+        //     else
+        //         sip.send(sip.makeResponse(rq, 481, "Call doesn't exists"));
+        //     console.log(`call id ${id}`)
+        // }
+        // else{
+        //     console.log(`Method not allowed`)
+        //     sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
+        // }
         console.log("SIP END")
     });
     await appservice.begin()
