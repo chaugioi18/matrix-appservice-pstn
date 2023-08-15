@@ -247,23 +247,23 @@ var dialogs = {};
 async function main() {
     // await userAgent.start()
     // console.log('sip connected')
-    sip.start({}, function (rq) {
-        console.log(`SIP START ${JSON.stringify(rq)}`)
-        sip.send(sip.makeResponse(rq, 200, "OK"));
-        // if(rq.headers.to) { // check if it's an in dialog request
-        //     var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
-        //     if(dialogs[id])
-        //         dialogs[id](rq);
-        //     else
-        //         sip.send(sip.makeResponse(rq, 481, "Call doesn't exists"));
-        //     console.log(`call id ${id}`)
-        // }
-        // else{
-        //     console.log(`Method not allowed`)
-        //     sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
-        // }
-        console.log("SIP END")
-    });
+    // sip.start({}, function (rq) {
+    //     console.log(`SIP START ${JSON.stringify(rq)}`)
+    //     sip.send(sip.makeResponse(rq, 200, "OK"));
+    //     // if(rq.headers.to) { // check if it's an in dialog request
+    //     //     var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
+    //     //     if(dialogs[id])
+    //     //         dialogs[id](rq);
+    //     //     else
+    //     //         sip.send(sip.makeResponse(rq, 481, "Call doesn't exists"));
+    //     //     console.log(`call id ${id}`)
+    //     // }
+    //     // else{
+    //     //     console.log(`Method not allowed`)
+    //     //     sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
+    //     // }
+    //     console.log("SIP END")
+    // });
     proxy.start({
             logger: {
                 recv: function (m) {
