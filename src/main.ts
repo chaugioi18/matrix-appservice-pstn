@@ -166,7 +166,7 @@ appservice.on("room.event", async (roomId, event) => {
                             //     // party_id: client.deviceId,
                             //     version: 1
                             // }
-                            intent.underlyingClient.sendEvent(this.roomId, "m.call.answer", content)
+                            // intent.underlyingClient.sendEvent(this.roomId, "m.call.answer", content)
                             // sending ACK
                             sip.send({
                                 method: 'ACK',
