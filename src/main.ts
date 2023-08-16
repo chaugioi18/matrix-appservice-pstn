@@ -277,7 +277,8 @@ async function main() {
                 error: function (e) {
                     console.log(e.stack);
                 }
-            }
+            },
+            host: '192.168.18.55'
         }, function (rq) {
             var rs = sip.makeResponse(rq, 200, 'Ok');
             proxy.send(rs);
