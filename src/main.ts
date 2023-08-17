@@ -135,6 +135,7 @@ appservice.on("room.event", async (roomId, event) => {
                             cseq: {method: 'INVITE', seq: Math.floor(Math.random() * 1e5)},
                             'content-type': 'application/sdp',
                             contact: [{uri: 'sip:842836222777@192.168.18.55:5060'}],
+                            Allow: "INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, INFO, PUBLISH",
                         },
                         content: sdp,
                         // content:
