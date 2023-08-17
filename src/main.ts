@@ -136,6 +136,7 @@ appservice.on("room.event", async (roomId, event) => {
                             'content-type': 'application/sdp',
                             contact: [{uri: 'sip:842836222777@192.168.18.55:5060'}],
                             Allow: "INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, INFO, PUBLISH",
+                            Supported: "replaces, timer"
                         },
                         content: sdp,
                         // content:
