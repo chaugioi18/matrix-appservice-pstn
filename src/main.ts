@@ -133,7 +133,7 @@ appservice.on("room.event", async (roomId, event) => {
                         continue
                     }
                     if (lines[i].includes("a=")) {
-                        if (lines[i].includes(":0 ") || lines[i].includes(":8 ") || lines[i].includes(":101 ") || lines[i].includes("ptime") || lines[i].includes("sendrecv")) {
+                        if (lines[i].includes(":0 ") || lines[i].includes(":8 ") || lines[i].includes(":110 ") || lines[i].includes("ptime") || lines[i].includes("sendrecv")) {
                             sdp += lines[i] + "\r\n"
                         }
                     } else {
