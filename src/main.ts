@@ -129,7 +129,7 @@ appservice.on("room.event", async (roomId, event) => {
                         method: 'INVITE',
                         uri: 'sip:0397196737@192.168.16.53:5060',
                         headers: {
-                            // via: [],
+                            via: [],
                             from: {uri: 'sip:842836222777@192.168.18.55:5060', params: {tag: rstring()}},
                             to: {uri: 'sip:0397196737@192.168.16.53', params: {tag: rstring()}},
                             'call-id': callId,
