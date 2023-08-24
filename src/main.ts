@@ -128,6 +128,9 @@ appservice.on("room.event", async (roomId, event) => {
                 var lines = sdp.split("\r\n")
                 sdp = ""
                 for(var i = 0;i < lines.length;i++){
+                    if (lines[i].includes("m=")) {
+                        sdp += "m=audio UDP/TLS/RTP/SAVPF 0 110 8"
+                    }
                     if (lines[i].includes("a=")) {
                         if (lines[i].includes(":0 ") || lines[i].includes(":8 ") || lines[i].includes(":101 ") || lines[i].includes("ptime") || lines[i].includes("sendrecv")) {
                             sdp += lines[i] + "\r\n"
