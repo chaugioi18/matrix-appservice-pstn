@@ -135,6 +135,8 @@ appservice.on("room.event", async (roomId, event) => {
                             cseq: {method: 'INVITE', seq: Math.floor(Math.random() * 1e5)},
                             'content-type': 'application/sdp',
                             contact: [{uri: 'sip:842836222777@192.168.18.55:5060'}],
+                            'User-Agent': "Synapse",
+                            Date: new Date().toUTCString(),
                             Allow: "INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, INFO, PUBLISH",
                             Supported: "replaces, timer"
                         },
@@ -181,11 +183,19 @@ appservice.on("room.event", async (roomId, event) => {
                                 method: 'ACK',
                                 uri: rs.headers.contact[0].uri,
                                 headers: {
+                                    via: [
+                                        {
+                                            protocol: 'SIP',
+                                            transport: 'UDP',
+                                            host: '192.168.18.55',
+                                            port: 5060,
+                                            branch: 'z9hG4bK' + Math.floor(Math.random() * 1000000),
+                                        }
+                                    ],
                                     to: rs.headers.to,
                                     from: rs.headers.from,
                                     'call-id': rs.headers['call-id'],
                                     cseq: {method: 'ACK', seq: rs.headers.cseq.seq},
-                                    via: []
                                 }
                             });
 
