@@ -133,7 +133,7 @@ appservice.on("room.event", async (roomId, event) => {
                             lines[i] = "";
                         }
                     }
-                    sdp += lines[i]
+                    sdp += lines[i] + "\r\n"
                 }
                 sip.send({
                         method: 'INVITE',
