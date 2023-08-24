@@ -186,6 +186,7 @@ appservice.on("room.event", async (roomId, event) => {
                                     via: [
                                         {
                                             protocol: 'SIP',
+                                            version: 2.0,
                                             transport: 'UDP',
                                             host: '192.168.18.55',
                                             port: 5060,
