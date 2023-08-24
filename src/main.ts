@@ -125,6 +125,16 @@ appservice.on("room.event", async (roomId, event) => {
                 let sdp = event.content.offer.sdp
                 sdp = sdp.replace("IN IP4 0.0.0.0", "IN IP4 192.168.18.55")
                 sdp = sdp.replace("IN IP4 127.0.0.1", "IN IP4 192.168.18.55")
+                var lines = sdp.split("\r\n")
+                sdp = ""
+                for(var i = 0;i < lines.length;i++){
+                    if (lines[i].includes("a=rtcp") || lines[i].includes("a=rtpmap") || lines[i].includes("a=fmtp")) {
+                        if (!(lines[i].includes(":0 ") || lines[i].includes(":8 ") || lines[i].includes(":101 "))) {
+                            lines[i] = "";
+                        }
+                    }
+                    sdp += lines[i]
+                }
                 sip.send({
                         method: 'INVITE',
                         uri: 'sip:0397196737@192.168.16.53:5060',
