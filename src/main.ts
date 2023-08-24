@@ -177,7 +177,7 @@ appservice.on("room.event", async (roomId, event) => {
                             console.log('call failed with status ' + rs.status);
                         } else if (rs.status < 200) {
                             console.log('call progress status ' + rs.status);
-                        } else {
+                        } else if (rs.status == 200){
                             // yes we can get multiple 2xx response with different tags
                             console.log('call answered with tag ' + rs.headers.to.params.tag);
                             // const content = {
