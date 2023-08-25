@@ -142,15 +142,20 @@ appservice.on("room.event", async (roomId, event) => {
                 }
                 sip.send({
                         method: 'INVITE',
-                        uri: 'sip:0397196737@192.168.16.53:5060',
+                        uri: 'sip:0397196737@192.168.16.53:5060', // thieu user=phone -> nghien cuu them no lay ten gi tu client
                         headers: {
                             via: [],
-                            from: {uri: 'sip:842836222777@192.168.18.55:5060', params: {tag: rstring()}},
-                            to: {uri: 'sip:0397196737@192.168.16.53', params: {tag: rstring()}},
+                            from: {uri: 'sip:842836222777@192.168.18.55:5060', params: {tag: rstring()}}, // default-------------------
+                            // thieu sip from display 
+                            //from: {uri: 'sip:842836222777@192.168.18.55', params: {tag: rstring()}}, //phuc test vua them
+                            to: {uri: 'sip:0397196737@192.168.16.53:5060', params: {tag: rstring()}}, // default--------------------------
+                            //to: {uri: 'sip:0397196737@192.168.16.53', params: {tag: rstring()}}, //phuc test vua them
+                            // sip to uri parameter: user=phone -> ban tin binh thuong se co
+                            //contact: [{uri: 'sip:842836222777@192.168.18.55:5060'}], //phuc test vua them
                             'call-id': callId,
                             cseq: {method: 'INVITE', seq: Math.floor(Math.random() * 1e5)},
                             'content-type': 'application/sdp',
-                            contact: [{uri: 'sip:842836222777@192.168.18.55:5060'}],
+                            contact: [{uri: 'sip:842836222777@192.168.18.55:5060'}], //default------------------------------
                             'User-Agent': "Synapse",
                             Date: new Date().toUTCString(),
                             Allow: "INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, INFO, PUBLISH",
