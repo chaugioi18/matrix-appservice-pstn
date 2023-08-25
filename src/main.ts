@@ -217,7 +217,7 @@ appservice.on("room.event", async (roomId, event) => {
                                     "m.call.transferee": false,
                                     "m.call.dtmf": false // TODO: handle DTMF
                                 },
-                                call_id: this.callId,
+                                call_id: event.content?.call_id,
                                 // party_id: client.deviceId,
                                 version: 1
                             }
