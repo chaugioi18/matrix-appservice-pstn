@@ -221,7 +221,7 @@ appservice.on("room.event", async (roomId, event) => {
                                 // party_id: client.deviceId,
                                 version: 1
                             }
-                            this.sendMatrixEvent("m.call.answer", content)
+                            intent.underlyingClient.sendEvent(roomId, "m.call.answer", content)
 
                             var id = [rs.headers['call-id'], rs.headers.from.params.tag, rs.headers.to.params.tag].join(':');
                             if (!dialogs[id]) {
