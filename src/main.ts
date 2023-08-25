@@ -92,6 +92,7 @@ appservice.on("room.event", async (roomId, event) => {
 
     const matrixId = event.sender
     const callId = event.content?.call_id + "@192.168.16.53:5060"
+    const phone = "0967265150"
 
     // let's find an intent which is able to post in that room
     const intent = await getIntentInRoom(roomId, appservice)
@@ -142,12 +143,12 @@ appservice.on("room.event", async (roomId, event) => {
                 }
                 sip.send({
                         method: 'INVITE',
-                        uri: 'sip:0397196737@192.168.16.53:5060;user=phone', // thieu user=phone -> nghien cuu them no lay ten gi tu client
+                        uri: 'sip:' + phone +'@192.168.16.53:5060;user=phone', // thieu user=phone -> nghien cuu them no lay ten gi tu client
                         headers: {
                             via: [],
                             // thieu sip from display
                             from: {name: matrixId, uri: 'sip:842836222777@192.168.18.55', params: {tag: rstring()}}, //phuc test vua them
-                            to: {uri: 'sip:0397196737@192.168.16.53;user=phone'}, //phuc test vua them
+                            to: {uri: 'sip:' + phone + '@192.168.16.53;user=phone'}, //phuc test vua them
                             contact: [{uri: 'sip:842836222777@192.168.18.55:5060'}],
                             'call-id': callId,
                             cseq: {method: 'INVITE', seq: Math.floor(Math.random() * 1e5)},
@@ -164,7 +165,7 @@ appservice.on("room.event", async (roomId, event) => {
                             's=-\r\n'+
                             'c=IN IP4 192.168.18.55\r\n'+
                             't=0 0\r\n'+
-                            'm=audio 16424 RTP/AVP 0 8 101\r\n'+
+                            'm=audio 9 RTP/AVP 0 8 101\r\n'+
                             'a=rtpmap:0 PCMU/8000\r\n'+
                             'a=rtpmap:8 PCMA/8000\r\n'+
                             'a=rtpmap:101 telephone-event/8000\r\n'+
