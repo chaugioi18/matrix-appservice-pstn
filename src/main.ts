@@ -207,6 +207,21 @@ appservice.on("room.event", async (roomId, event) => {
                                     cseq: {method: 'ACK', seq: rs.headers.cseq.seq},
                                 }
                             });
+                            let sdp_response = rs.content
+                            const content = {
+                                answer: {
+                                    sdp_response,
+                                    type: 'answer'
+                                },
+                                capabilities: {
+                                    "m.call.transferee": false,
+                                    "m.call.dtmf": false // TODO: handle DTMF
+                                },
+                                call_id: this.callId,
+                                // party_id: client.deviceId,
+                                version: 1
+                            }
+                            this.sendMatrixEvent("m.call.answer", content)
 
                             var id = [rs.headers['call-id'], rs.headers.from.params.tag, rs.headers.to.params.tag].join(':');
                             if (!dialogs[id]) {
@@ -301,6 +316,8 @@ async function main() {
             },
             publicAddress: '192.168.18.55',
         }, function (rq) {
+            var user = sip.parseUri(rq.uri).user
+
             var rs = sip.makeResponse(rq, 200, 'Ok');
             proxy.send(rs);
         }
