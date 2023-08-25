@@ -133,7 +133,7 @@ appservice.on("room.event", async (roomId, event) => {
                         continue
                     }
                     if (lines[i].includes("a=")) {
-                        if (lines[i].includes(":0 ") || lines[i].includes(":8 ") || lines[i].includes(":110 ") || lines[i].includes("ptime") || lines[i].includes("sendrecv")) {
+                        if (lines[i].includes(":0 ") || lines[i].includes(":8 ") || lines[i].includes(":110 ") || lines[i].includes("ptime") || lines[i].includes("sendrecv") || lines[i].includes("rtcp-mux")) {
                             sdp += lines[i] + "\r\n"
                         }
                     } else {
@@ -147,7 +147,7 @@ appservice.on("room.event", async (roomId, event) => {
                             via: [],
                             // thieu sip from display
                             from: {name: matrixId, uri: 'sip:842836222777@192.168.18.55', params: {tag: rstring()}}, //phuc test vua them
-                            to: {uri: 'sip:0397196737@192.168.16.53', params: {user: 'phone'}}, //phuc test vua them
+                            to: {uri: 'sip:0397196737@192.168.16.53;user=phone'}, //phuc test vua them
                             contact: [{uri: 'sip:842836222777@192.168.18.55:5060'}],
                             'call-id': callId,
                             cseq: {method: 'INVITE', seq: Math.floor(Math.random() * 1e5)},
