@@ -129,7 +129,7 @@ appservice.on("room.event", async (roomId, event) => {
                 sdp = ""
                 for(var i = 0;i < lines.length;i++){
                     if (lines[i].includes("m=")) {
-                        sdp += "m=audio UDP/TLS/RTP/SAVPF 0 110 8\r\n"
+                        sdp += "m=audio 9 RTP 0 110 8\r\n"
                         continue
                     }
                     if (lines[i].includes("a=")) {
