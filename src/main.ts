@@ -3,10 +3,9 @@ import {getIntentInRoom} from "./store";
 import {createAppservice, getOrUploadAvatarUrl} from "./appservice";
 import {formatPhoneNumber} from './utils';
 import {APPSERVICE_CONFIG, COUNTRY_CODE} from './config';
-// import { createUserAgent } from './sip';
-
-var sip = require('sip')
-var proxy = require('sip/proxy')
+import {setupProxy} from './sip';
+import {sip} from 'sip';
+import {proxy} from 'sip/proxy';
 
 // mapping between Call-IDs and Call instances
 const callMapping: { [callId: string]: Call } = {}
@@ -60,7 +59,6 @@ async function onInvite(rq) {
     call.inviteMatrix(rq.content)
 }
 
-// const userAgent = createUserAgent(onInvite)
 const appservice = createAppservice(APPSERVICE_CONFIG)
 
 appservice.on("room.event", async (roomId, event) => {
@@ -100,14 +98,14 @@ appservice.on("room.event", async (roomId, event) => {
             case 'm.call.invite':
                 console.log(`EVENT ${JSON.stringify(event)}`)
                 // sip = sip.parseUri("sip:842836222777@192.168.16.53:5060");
-                    const sdp = event.content?.offer?.sdp
-                    const number = appservice.getSuffixForUserId(intent.userId)
-                    call = new Call(callId, roomId, intent)
-                    call.handleMatrixInvite(sdp)
-                    call.on('close' ,() => {
-                        delete callMapping[callId]
-                    })
-                    callMapping[callId] = call
+                const sdp = event.content?.offer?.sdp
+                const number = appservice.getSuffixForUserId(intent.userId)
+                call = new Call(callId, roomId, intent)
+                call.handleMatrixInvite(matrixId, phone, sdp)
+                call.on('close', () => {
+                    delete callMapping[callId]
+                })
+                callMapping[callId] = call
                 break
             // SDP candidates
             case 'm.call.candidates':
@@ -141,25 +139,6 @@ appservice.on("room.event", async (roomId, event) => {
 var dialogs = {};
 
 async function main() {
-    // await userAgent.start()
-    // console.log('sip connected')
-    // sip.start({}, function (rq) {
-    //     console.log(`SIP START ${JSON.stringify(rq)}`)
-    //     sip.send(sip.makeResponse(rq, 200, "OK"));
-    //     // if(rq.headers.to) { // check if it's an in dialog request
-    //     //     var id = [rq.headers['call-id'], rq.headers.to.params.tag, rq.headers.from.params.tag].join(':');
-    //     //     if(dialogs[id])
-    //     //         dialogs[id](rq);
-    //     //     else
-    //     //         sip.send(sip.makeResponse(rq, 481, "Call doesn't exists"));
-    //     //     console.log(`call id ${id}`)
-    //     // }
-    //     // else{
-    //     //     console.log(`Method not allowed`)
-    //     //     sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
-    //     // }
-    //     console.log("SIP END")
-    // });
     proxy.start({
             logger: {
                 recv: function (m) {
@@ -174,10 +153,14 @@ async function main() {
             },
             publicAddress: '192.168.18.55',
         }, function (rq) {
-            var user = sip.parseUri(rq.uri).user
-
-            var rs = sip.makeResponse(rq, 200, 'Ok');
-            proxy.send(rs);
+            rq.headers.from
+            var callId = rq.headers['Call-ID']
+            if (callMapping[callId]) {
+                proxy.send(sip.makeResponse(rq, 100, 'Trying'));
+                // proxy.send(rq);
+            } else {
+                proxy.send(sip.makeResponse(rq, 200, 'OK'));
+            }
         }
     )
     await appservice.begin()

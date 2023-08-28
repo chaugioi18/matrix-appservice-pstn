@@ -133,8 +133,8 @@ export default class Call extends EventEmitter {
                         method: 'ACK',
                         uri: rs.headers.contact[0].uri,
                         headers: {
-                            to: rs.headers.to,
                             from: rs.headers.from,
+                            to: rs.headers.to,
                             'call-id': rs.headers['call-id'],
                             cseq: {method: 'ACK', seq: rs.headers.cseq.seq},
                         }
@@ -150,7 +150,6 @@ export default class Call extends EventEmitter {
                             "m.call.dtmf": false // TODO: handle DTMF
                         },
                         call_id: this.callId,
-                        // party_id: client.deviceId,
                         version: 1
                     }
                     this.intent.underlyingClient.sendEvent(this.roomId, "m.call.answer", content)
