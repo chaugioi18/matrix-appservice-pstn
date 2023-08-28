@@ -19,7 +19,6 @@
     "matrix-js-sdk": "^12.4.0",
     "morgan": "^1.10.0",
     "sip": "https://github.com/chaugioi18/sip.js#mila/fix",
-    "sip.js": "0.16.0",
     "ws": "^8.2.2"
   }
 }

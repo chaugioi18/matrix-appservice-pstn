@@ -1,4 +1,3 @@
-import {Invitation} from "sip.js";
 import Call from './Call'
 import {getIntentInRoom} from "./store";
 import {createAppservice, getOrUploadAvatarUrl} from "./appservice";
@@ -15,30 +14,15 @@ const callMapping: { [callId: string]: Call } = {}
 /**
  * Called when we recieve an invite from freeswitch
  */
-async function onInvite(invitation: Invitation) {
-    const matrixId = invitation.request.headers['X-Matrix-Id']?.[0]?.raw
-    const callId = invitation.request.callId
-
-    // prepend contry code?
-    let from = invitation.request.from.displayName
+async function onInvite(rq) {
+    const callId = rq.headers['call-id']
+    let from = rq.headers.from.name
     if (from.startsWith('0') && !from.startsWith('00')) {
         from = COUNTRY_CODE + from.slice(1)
     }
     if (from.startsWith('00')) {
         from = '+' + from.slice(2)
     }
-
-    if (!matrixId) {
-        await invitation.reject()
-        console.error('got invite, but without any matrixId', {matrixId, callId, from})
-        return
-    }
-    if (!from.slice(1).match(/^[0-9]+/)) {
-        await invitation.reject()
-        console.error('got invite, but From/Caller-ID seems invalid', {matrixId, callId, from})
-        return
-    }
-
     // get or create intent
     const intent = appservice.getIntentForSuffix(from)
     await intent.ensureRegistered()
@@ -50,11 +34,10 @@ async function onInvite(invitation: Invitation) {
     let roomId: string
     for (let r of rooms) {
         const members = await intent.underlyingClient.getJoinedRoomMembers(r)
-        console.log(r, {members})
-        if (members.includes(matrixId)) {
-            roomId = r
-            break
-        }
+        // if (members.includes(matrixId)) {
+        //     roomId = r
+        //     break
+        // }
     }
 
     // if not, create one
@@ -63,18 +46,18 @@ async function onInvite(invitation: Invitation) {
             preset: 'private_chat',
             name: formatPhoneNumber(from),
             is_direct: true,
-            invite: [matrixId]
+            // invite: [matrixId]
         })
     }
 
     // create call pobject
-    // const call = new Call(callId, roomId, intent, userAgent)
+    const call = new Call(callId, roomId, intent)
 
     // store to match with later matrix events
-    // callMapping[callId] = call
+    callMapping[callId] = call
 
     // handle Invitation
-    // call.inviteMatrix(invitation)
+    call.inviteMatrix(rq.content)
 }
 
 // const userAgent = createUserAgent(onInvite)
@@ -117,140 +100,15 @@ appservice.on("room.event", async (roomId, event) => {
             case 'm.call.invite':
                 console.log(`EVENT ${JSON.stringify(event)}`)
                 // sip = sip.parseUri("sip:842836222777@192.168.16.53:5060");
-                if (!sip.parseUri("sip:842836222777@192.168.16.53:5060")) {
-                    console.log("Sip parse uri failed")
-                } else {
-                    console.log("Sip parse successful")
-                    console.log(`SIP ${sip}`)
-                }
-                let sdp = event.content.offer.sdp
-                sdp = sdp.replace("IN IP4 0.0.0.0", "IN IP4 192.168.18.55")
-                sdp = sdp.replace("IN IP4 127.0.0.1", "IN IP4 192.168.18.55")
-                var lines = sdp.split("\r\n")
-                sdp = ""
-                for(var i = 0;i < lines.length;i++){
-                    if (lines[i].includes("m=")) {
-                        sdp += "m=audio 9 RTP 0 110 8\r\n"
-                        continue
-                    }
-                    if (lines[i].includes("a=")) {
-                        if (lines[i].includes(":0 ") || lines[i].includes(":8 ") || lines[i].includes(":110 ") || lines[i].includes("ptime") || lines[i].includes("sendrecv") || lines[i].includes("rtcp-mux")) {
-                            sdp += lines[i] + "\r\n"
-                        }
-                    } else {
-                        sdp += lines[i] + "\r\n"
-                    }
-                }
-                sip.send({
-                        method: 'INVITE',
-                        uri: 'sip:' + phone +'@192.168.16.53:5060;user=phone', // thieu user=phone -> nghien cuu them no lay ten gi tu client
-                        headers: {
-                            via: [],
-                            // thieu sip from display
-                            from: {name: matrixId, uri: 'sip:842836222777@192.168.18.55', params: {tag: rstring()}}, //phuc test vua them
-                            to: {uri: 'sip:' + phone + '@192.168.16.53;user=phone'}, //phuc test vua them
-                            contact: [{uri: 'sip:842836222777@192.168.18.55:5060'}],
-                            'call-id': callId,
-                            cseq: {method: 'INVITE', seq: Math.floor(Math.random() * 1e5)},
-                            'content-type': 'application/sdp',
-                            'User-Agent': "Synapse",
-                            Date: new Date().toUTCString(),
-                            Allow: "INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, INFO, PUBLISH",
-                            Supported: "replaces, timer"
-                        },
-                        // content: sdp,
-                        content:
-                            'v=0\r\n'+
-                            'o=- 147852963 147852964 IN IP4 192.168.18.55\r\n'+
-                            's=-\r\n'+
-                            'c=IN IP4 192.168.18.55\r\n'+
-                            't=0 0\r\n'+
-                            'm=audio 9 RTP/AVP 0 8 101\r\n'+
-                            'a=rtpmap:0 PCMU/8000\r\n'+
-                            'a=rtpmap:8 PCMA/8000\r\n'+
-                            'a=rtpmap:101 telephone-event/8000\r\n'+
-                            'a=fmtp:101 0-15\r\n'+
-                            'a=ptime:30\r\n'+
-                            'a=sendrecv\r\n'
-                    },
-                    function (rs) {
-                        console.log(`RS!!!!! ${JSON.stringify(rs)}`)
-                        if (rs.status >= 300) {
-                            console.log('call failed with status ' + rs.status);
-                        } else if (rs.status < 200) {
-                            console.log('call progress status ' + rs.status);
-                        } else if (rs.status == 200){
-                            // yes we can get multiple 2xx response with different tags
-                            console.log('call answered with tag ' + rs.headers.to.params.tag);
-                            // const content = {
-                            //     answer: {
-                            //         sdp,
-                            //         type: 'answer'
-                            //     },
-                            //     capabilities: {
-                            //         "m.call.transferee": false,
-                            //         "m.call.dtmf": false // TODO: handle DTMF
-                            //     },
-                            //     call_id: this.callId,
-                            //     // party_id: client.deviceId,
-                            //     version: 1
-                            // }
-                            // intent.underlyingClient.sendEvent(this.roomId, "m.call.answer", content)
-                            // sending ACK
-                            sip.send({
-                                method: 'ACK',
-                                uri: rs.headers.contact[0].uri,
-                                headers: {
-                                    to: rs.headers.to,
-                                    from: rs.headers.from,
-                                    'call-id': rs.headers['call-id'],
-                                    cseq: {method: 'ACK', seq: rs.headers.cseq.seq},
-                                }
-                            });
-                            let sdp_response = rs.content
-                            const content = {
-                                answer: {
-                                    sdp_response,
-                                    type: 'answer'
-                                },
-                                capabilities: {
-                                    "m.call.transferee": false,
-                                    "m.call.dtmf": false // TODO: handle DTMF
-                                },
-                                call_id: event.content?.call_id,
-                                // party_id: client.deviceId,
-                                version: 1
-                            }
-                            intent.underlyingClient.sendEvent(roomId, "m.call.answer", content)
-
-                            var id = [rs.headers['call-id'], rs.headers.from.params.tag, rs.headers.to.params.tag].join(':');
-                            if (!dialogs[id]) {
-                                dialogs[id] = function (rq) {
-                                    if (rq.method === 'BYE') {
-                                        console.log('call received bye');
-
-                                        delete dialogs[id];
-
-                                        sip.send(sip.makeResponse(rq, 200, 'Ok'));
-                                    } else {
-                                        sip.send(sip.makeResponse(rq, 405, 'Method not allowed'));
-                                    }
-                                }
-                            }
-                        }
-                    });
-                // if (false) {
-                //     const sdp = event.content?.offer?.sdp
-                //     const number = appservice.getSuffixForUserId(intent.userId)
-                //     call = new Call(callId, roomId, intent, userAgent)
-                //     call.handleMatrixInvite(sdp, matrixId, number)
-                //     call.on('close' ,() => {
-                //         delete callMapping[callId]
-                //     })
-                //     callMapping[callId] = call
-                // }
+                    const sdp = event.content?.offer?.sdp
+                    const number = appservice.getSuffixForUserId(intent.userId)
+                    call = new Call(callId, roomId, intent)
+                    call.handleMatrixInvite(sdp)
+                    call.on('close' ,() => {
+                        delete callMapping[callId]
+                    })
+                    callMapping[callId] = call
                 break
-
             // SDP candidates
             case 'm.call.candidates':
                 call = callMapping[callId]
