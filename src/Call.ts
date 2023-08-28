@@ -1,6 +1,6 @@
 import { Intent, RoomEvent } from 'matrix-bot-sdk';
 import { EventEmitter } from "events";
-import { sip } from 'sip';
+import * as sip from 'sip';
 
 function rstring() {
     return Math.floor(Math.random() * 1e6).toString();
