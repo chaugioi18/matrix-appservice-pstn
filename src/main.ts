@@ -4,8 +4,8 @@ import {createAppservice, getOrUploadAvatarUrl} from "./appservice";
 import {formatPhoneNumber} from './utils';
 import {APPSERVICE_CONFIG, COUNTRY_CODE} from './config';
 import {setupProxy} from './sip';
-import {sip} from 'sip';
-import {proxy} from 'sip/proxy';
+import * as sip from 'sip';
+import * as proxy from 'sip/proxy';
 
 // mapping between Call-IDs and Call instances
 const callMapping: { [callId: string]: Call } = {}
