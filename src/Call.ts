@@ -1,5 +1,5 @@
-import { Intent, RoomEvent } from 'matrix-bot-sdk';
-import { EventEmitter } from "events";
+import {Intent, RoomEvent} from 'matrix-bot-sdk';
+import {EventEmitter} from "events";
 import * as sip from 'sip';
 
 function rstring() {
@@ -16,6 +16,7 @@ export default class Call extends EventEmitter {
     private isCallEstablished = false
     private intent: Intent
     private sdpCandidates: string = ''
+
     constructor(callId: string, roomId: string, intent: Intent) {
         super()
         this.callId = callId
@@ -28,26 +29,27 @@ export default class Call extends EventEmitter {
      * Handle SDP candidates from the matrix user
      */
     async handleCandidates(event: RoomEvent<any>) {
-        const candidates  = event.content.candidates
-        if(!candidates.length) return
-        for(let c of candidates) {
-            if(!c.candidate) continue
-            this.sdpCandidates += 'a='+c.candidate+'\r\n'
+        const candidates = event.content.candidates
+        if (!candidates.length) return
+        for (let c of candidates) {
+            if (!c.candidate) continue
+            this.sdpCandidates += 'a=' + c.candidate + '\r\n'
         }
         this.sdpCandidates += 'a=end-of-candidates\r\n'
 
     }
+
     /**
      * Handle an Invitation by an matrix user
      * It might wait for SDP candidates
      */
     async handleMatrixInvite(matrixId: string, phone: string, sdp: string) {
-        if(sdp.includes('a=candidate:')) {
+        if (sdp.includes('a=candidate:')) {
             // candidates already included
             await this.inviteSIP(matrixId, phone, sdp)
         } else {
             // candidates come later with an m.call.candidates event
-            await this.waitForCandidates( () => {
+            await this.waitForCandidates(() => {
                 return this.inviteSIP(matrixId, phone, sdp)
             })
         }
@@ -57,12 +59,12 @@ export default class Call extends EventEmitter {
      * wait for an m.call.candidates event event or timeout after 3 seconds
      */
     private async waitForCandidates(cb: Function): Promise<void> {
-        return new Promise( (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             const interval = setInterval(() => {
-                if(this.sdpCandidates) {
+                if (this.sdpCandidates) {
                     clearInterval(interval)
                     const res = cb()
-                    if(res instanceof Promise) {
+                    if (res instanceof Promise) {
                         res.then(resolve)
                     } else {
                         resolve()
@@ -71,8 +73,8 @@ export default class Call extends EventEmitter {
             }, 100)
 
             // timeout? -> hangup
-            setTimeout( () => {
-                if(this.sdpCandidates) return
+            setTimeout(() => {
+                if (this.sdpCandidates) return
                 clearInterval(interval)
                 this.hangup()
                 reject(new Error('timeout waiting for candidates'))
@@ -80,20 +82,21 @@ export default class Call extends EventEmitter {
         })
 
     }
+
     /**
      * forward the matrix call including the SDP towards freeswitch
      */
     private async inviteSIP(matrixId: string, phone: string, sdp: string) {
-        if (!sip.parseUri("sip:842836222777@192.168.16.53:5060")) {
-            console.log("Sip parse uri failed")
-        } else {
-            console.log("Sip parse successful")
-            console.log(`SIP ${sip}`)
-        }
+        // if (!sip.parseUri("sip:842836222777@192.168.16.53:5060")) {
+        //     console.log("Sip parse uri failed")
+        // } else {
+        //     console.log("Sip parse successful")
+        //     console.log(`SIP ${sip}`)
+        // }
         // let sdp = event.content.offer.sdp
         sip.send({
                 method: 'INVITE',
-                uri: 'sip:' + phone +'@192.168.16.53:5060;user=phone', // thieu user=phone -> nghien cuu them no lay ten gi tu client
+                uri: 'sip:' + phone + '@192.168.16.53:5060;user=phone', // thieu user=phone -> nghien cuu them no lay ten gi tu client
                 headers: {
                     via: [],
                     from: {name: matrixId, uri: 'sip:842836222777@192.168.18.55', params: {tag: rstring()}}, //phuc test vua them
@@ -109,25 +112,26 @@ export default class Call extends EventEmitter {
                 },
                 // content: sdp,
                 content:
-                    'v=0\r\n'+
-                    'o=- 147852963 147852964 IN IP4 192.168.18.55\r\n'+
-                    's=-\r\n'+
-                    'c=IN IP4 192.168.18.55\r\n'+
-                    't=0 0\r\n'+
-                    'm=audio 9 RTP/AVP 0 8 101\r\n'+
-                    'a=rtpmap:0 PCMU/8000\r\n'+
-                    'a=rtpmap:8 PCMA/8000\r\n'+
-                    'a=rtpmap:101 telephone-event/8000\r\n'+
-                    'a=fmtp:101 0-15\r\n'+
-                    'a=ptime:30\r\n'+
+                    'v=0\r\n' +
+                    'o=- 147852963 147852964 IN IP4 192.168.18.55\r\n' +
+                    's=-\r\n' +
+                    'c=IN IP4 192.168.18.55\r\n' +
+                    't=0 0\r\n' +
+                    'm=audio 9 RTP/AVP 0 8 101\r\n' +
+                    'a=rtpmap:0 PCMU/8000\r\n' +
+                    'a=rtpmap:8 PCMA/8000\r\n' +
+                    'a=rtpmap:101 telephone-event/8000\r\n' +
+                    'a=fmtp:101 0-15\r\n' +
+                    'a=ptime:30\r\n' +
                     'a=sendrecv\r\n'
             },
             function (rs) {
+                console.log(`Call Response ${rs}`)
                 if (rs.status >= 300) {
                     console.log('call failed with status ' + rs.status);
                 } else if (rs.status < 200) {
                     console.log('call progress status ' + rs.status);
-                } else if (rs.status == 200){
+                } else if (rs.status == 200) {
                     console.log('call answered with tag ' + rs.headers.to.params.tag);
                     sip.send({
                         method: 'ACK',
@@ -139,23 +143,9 @@ export default class Call extends EventEmitter {
                             cseq: {method: 'ACK', seq: rs.headers.cseq.seq},
                         }
                     });
-                    let sdp_response = rs.content
-                    const content = {
-                        answer: {
-                            sdp_response,
-                            type: 'answer'
-                        },
-                        capabilities: {
-                            "m.call.transferee": false,
-                            "m.call.dtmf": false // TODO: handle DTMF
-                        },
-                        call_id: this.callId,
-                        version: 1
-                    }
-                    this.intent.underlyingClient.sendEvent(this.roomId, "m.call.answer", content)
+                    this.onSipInviteResponse(sdp);
                 }
             });
-        this.onSipInviteResponse(sdp);
         console.log('invited')
     }
 
@@ -202,15 +192,15 @@ export default class Call extends EventEmitter {
     /**
      * Forwards an matrix call accept event (m.call.answer) to SIP
      */
-    async handleAnswer(event:  RoomEvent<any>) {
-        const callId  = event.content?.call_id
-        const sdp: string  = event.content?.answer?.sdp
-        if(!sdp || !callId) return
+    async handleAnswer(event: RoomEvent<any>) {
+        const callId = event.content?.call_id
+        const sdp: string = event.content?.answer?.sdp
+        if (!sdp || !callId) return
 
         const accept = async () => {
             //TODO Accept
         }
-        if(sdp.includes('a=candidate:')) {
+        if (sdp.includes('a=candidate:')) {
             await accept()
         } else {
             await this.waitForCandidates(accept)
@@ -224,10 +214,11 @@ export default class Call extends EventEmitter {
         this.intent.underlyingClient.sendEvent(this.roomId, type, content)
     }
 
+
     /**
      * hangup the current call and clean up references
      */
-    hangup(reason?: "ice_failed"|"invite_timeout", bySIP: boolean = false) {
+    hangup(reason?: "ice_failed" | "invite_timeout", bySIP: boolean = false) {
         const type = this.isCallEstablished ? "m.call.hangup" : "m.call.reject"
         const content = {
             call_id: this.callId,

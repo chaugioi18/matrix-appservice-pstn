@@ -96,7 +96,6 @@ appservice.on("room.event", async (roomId, event) => {
 
             // Invite to a new call by the matrix user
             case 'm.call.invite':
-                console.log(`EVENT ${JSON.stringify(event)}`)
                 // sip = sip.parseUri("sip:842836222777@192.168.16.53:5060");
                 const sdp = event.content?.offer?.sdp
                 const number = appservice.getSuffixForUserId(intent.userId)
@@ -142,10 +141,10 @@ async function main() {
     proxy.start({
             logger: {
                 recv: function (m) {
-                    console.log('recv:' + JSON.stringify(m));
+                    // console.log('recv:' + JSON.stringify(m));
                 },
                 send: function (m) {
-                    console.log('send:' + JSON.stringify(m));
+                    // console.log('send:' + JSON.stringify(m));
                 },
                 error: function (e) {
                     console.log(e.stack);
@@ -153,7 +152,6 @@ async function main() {
             },
             publicAddress: '192.168.18.55',
         }, function (rq) {
-            rq.headers.from
             var callId = rq.headers['Call-ID']
             if (callMapping[callId]) {
                 proxy.send(sip.makeResponse(rq, 100, 'Trying'));
