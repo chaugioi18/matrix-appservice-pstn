@@ -55,7 +55,7 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
                 let number: string = fields['m.id.phone']
                 if(!number) return cb()
                 // const userid = numberToMatrixId(number)
-                const userid = '@mila2:synapse'
+                const userid = '@chaunn1:synapse'
                 await storeIntent(appservice, userid)
                 cb([
                     {
