@@ -79,6 +79,7 @@ export default class Call extends EventEmitter {
     }
 
     private async inviteSIP(matrixId: string, phone: string, sdp: string) {
+        console.log(`BEFORE CALLING.... ${phone}`)
         phone = phone.replace("+84", "0")
         console.log(`CALLING.... ${phone}`)
         sip.send({
