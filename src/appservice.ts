@@ -25,7 +25,7 @@ export async function getOrUploadAvatarUrl(): Promise<string> {
 }
 
 export function createAppservice(options: IAppserviceOptions): Appservice {
-        
+
     appservice = new Appservice(options);
 
     // auto join on room invites
@@ -54,7 +54,8 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
             case 'm.protocol.pstn':
                 let number: string = fields['m.id.phone']
                 if(!number) return cb()
-                const userid = numberToMatrixId(number)
+                // const userid = numberToMatrixId(number)
+                const userid = '@mila2:synapse'
                 await storeIntent(appservice, userid)
                 cb([
                     {
@@ -64,7 +65,7 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
                     }
                 ])
                 break
-            
+
             case 'im.vector.protocol.sip_native':
                 cb([
                     {
@@ -92,17 +93,17 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
 
             default:
                 cb()
-        }    
+        }
     })
     appservice.on("query.user", async (userId, createUser) => {
         // This is called when the homeserver queries a user's existence. At this point, a
         // user should be created. To do that, give an object or Promise of an object in the
         // form below to the createUser function (as shown). To prevent the creation of a user,
         // pass false to createUser, like so: createUser(false);
-    
+
         console.log(`Received query for user ${userId}`);
         const suffix = appservice.getSuffixForUserId(userId)
-        if(!suffix) return createUser(false)    
+        if(!suffix) return createUser(false)
         await storeIntent(appservice, userId)
         createUser({
             display_name: formatPhoneNumber(suffix),
@@ -128,5 +129,5 @@ export function createAppservice(options: IAppserviceOptions): Appservice {
         console.log(`Left ${roomId} as ${leaveEvent["state_key"]}`);
     });
 
-    return appservice   
+    return appservice
 }
