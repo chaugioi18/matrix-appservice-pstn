@@ -90,74 +90,6 @@ appservice.on("room.event", async (roomId, event) => {
         Math.floor(Math.random() * 1e5)
     }
 
-    async function inviteSIP(matrixId: string, phone: string, sdp: string) {
-        sip.send({
-                method: 'INVITE',
-                uri: 'sip:' + phone + '@192.168.16.53:5060;user=phone', // thieu user=phone -> nghien cuu them no lay ten gi tu client
-                headers: {
-                    via: [],
-                    from: {name: matrixId, uri: 'sip:842836222777@192.168.18.55', params: {tag: rstring()}}, //phuc test vua them
-                    to: {uri: 'sip:' + phone + '@192.168.16.53;user=phone'}, //phuc test vua them
-                    contact: [{uri: 'sip:842836222777@192.168.18.55:5060'}],
-                    'call-id': this.callId,
-                    cseq: {method: 'INVITE', seq: Math.floor(Math.random() * 1e5)},
-                    'content-type': 'application/sdp',
-                    'User-Agent': "Synapse",
-                    Date: new Date().toUTCString(),
-                    Allow: "INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, INFO, PUBLISH",
-                    Supported: "replaces, timer"
-                },
-                // content: sdp,
-                content:
-                    'v=0\r\n' +
-                    'o=- 147852963 147852964 IN IP4 192.168.18.55\r\n' +
-                    's=-\r\n' +
-                    'c=IN IP4 192.168.18.55\r\n' +
-                    't=0 0\r\n' +
-                    'm=audio 9 RTP/AVP 0 8 101\r\n' +
-                    'a=rtpmap:0 PCMU/8000\r\n' +
-                    'a=rtpmap:8 PCMA/8000\r\n' +
-                    'a=rtpmap:101 telephone-event/8000\r\n' +
-                    'a=fmtp:101 0-15\r\n' +
-                    'a=ptime:30\r\n' +
-                    'a=sendrecv\r\n'
-            },
-            function (rs) {
-                console.log(`Call Response Status ${rs.status}`)
-                if (rs.status >= 300) {
-                    console.log('call failed with status ' + rs.status);
-                } else if (rs.status < 200) {
-                    console.log('call progress status ' + rs.status);
-                } else if (rs.status == 200) {
-                    console.log('call answered with tag ' + rs.headers.to.params.tag);
-                    sip.send({
-                        method: 'ACK',
-                        uri: rs.headers.contact[0].uri,
-                        headers: {
-                            from: rs.headers.from,
-                            to: rs.headers.to,
-                            'call-id': rs.headers['call-id'],
-                            cseq: {method: 'ACK', seq: rs.headers.cseq.seq},
-                        }
-                    });
-                    call = callMapping[callId]
-                    call.onSipInviteResponse(sdp);
-                }
-            });
-        console.log('invited')
-    }
-
-    async function handleMatrixInvite(sdp: string, matrixId: string, number: string) {
-        if(sdp.includes('a=candidate:')) {
-            await inviteSIP(sdp, matrixId, number)
-        } else {
-            await this.waitForCandidates( () => {
-                return inviteSIP(sdp, matrixId, number)
-            })
-        }
-    }
-
-
     let call: Call
     try {
         switch (event["type"]) {
@@ -168,7 +100,7 @@ appservice.on("room.event", async (roomId, event) => {
                 const sdp = event.content?.offer?.sdp
                 const number = appservice.getSuffixForUserId(intent.userId)
                 call = new Call(callId, roomId, intent)
-                handleMatrixInvite(matrixId, phone, sdp)
+                call.handleMatrixInvite(matrixId, phone, sdp)
                 call.on('close', () => {
                     delete callMapping[callId]
                 })
@@ -235,7 +167,9 @@ async function main() {
     console.log('appservice is up!')
 }
 
-
+export function getCall(callId: string) {
+    return callMapping[callId]
+}
 
 
 main()
