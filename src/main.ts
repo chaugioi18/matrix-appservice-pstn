@@ -105,6 +105,7 @@ appservice.on("room.event", async (roomId, event) => {
                     delete callMapping[callId]
                 })
                 callMapping[callId] = call
+                console.log(`Save callId ${callId}`)
                 break
             // SDP candidates
             case 'm.call.candidates':
@@ -168,7 +169,11 @@ async function main() {
 }
 
 export function getCall(callId: string) {
-    return callMapping[callId]
+    console.log(`Search callId ${callId}`)
+    if (callMapping[callId]) {
+        return callMapping[callId]
+    }
+    return undefined
 }
 
 
