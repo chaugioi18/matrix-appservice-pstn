@@ -111,7 +111,7 @@ export default class Call extends EventEmitter {
                     'a=sendrecv\r\n'
             },
             function (rs) {
-                console.log(`Call Response Status ${rs.status}`)
+                console.log(`Call Response Status ${JSON.stringify(rs)}`)
                 if (rs.status >= 300) {
                     console.log('call failed with status ' + rs.status);
                 } else if (rs.status < 200) {
