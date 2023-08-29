@@ -73,7 +73,6 @@ appservice.on("room.event", async (roomId, event) => {
 
     const matrixId = event.sender
     const callId = event.content?.call_id + "@192.168.16.53:5060"
-    const phone = "0967265150"
 
     // let's find an intent which is able to post in that room
     const intent = await getIntentInRoom(roomId, appservice)
@@ -100,7 +99,7 @@ appservice.on("room.event", async (roomId, event) => {
                 const sdp = event.content?.offer?.sdp
                 const number = appservice.getSuffixForUserId(intent.userId)
                 call = new Call(callId, roomId, intent)
-                call.handleMatrixInvite(matrixId, phone, sdp)
+                call.handleMatrixInvite(matrixId, number, sdp)
                 call.on('close', () => {
                     delete callMapping[callId]
                 })
