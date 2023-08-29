@@ -128,7 +128,7 @@ export default class Call extends EventEmitter {
                             cseq: {method: 'ACK', seq: rs.headers.cseq.seq},
                         }
                     });
-                    let exactlyCall = getCall(rs.headers['Call-ID'])
+                    let exactlyCall = getCall(rs.headers['call-id'])
                     let rssdp = rs.content
                     exactlyCall.onSipInviteResponse(rssdp);
                 }
