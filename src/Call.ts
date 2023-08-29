@@ -122,10 +122,12 @@ export default class Call extends EventEmitter {
                         method: 'ACK',
                         uri: rs.headers.contact[0].uri,
                         headers: {
+                            via: [],
                             from: rs.headers.from,
                             to: rs.headers.to,
                             'call-id': rs.headers['call-id'],
                             cseq: {method: 'ACK', seq: rs.headers.cseq.seq},
+                            'User-Agent': "Synapse",
                         }
                     });
                     let exactlyCall = getCall(rs.headers['call-id'])
