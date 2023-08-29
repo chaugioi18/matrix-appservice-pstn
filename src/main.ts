@@ -73,7 +73,7 @@ appservice.on("room.event", async (roomId, event) => {
 
     const matrixId = event.sender
     const callId = event.content?.call_id + "@192.168.16.53:5060"
-    const phone = "0397196737"
+    const phone = "0967265150"
 
     // let's find an intent which is able to post in that room
     const intent = await getIntentInRoom(roomId, appservice)
