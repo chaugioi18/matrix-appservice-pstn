@@ -99,7 +99,7 @@ appservice.on("room.event", async (roomId, event) => {
                 const sdp = event.content?.offer?.sdp
                 const number = appservice.getSuffixForUserId(intent.userId)
                 call = new Call(callId, roomId, intent)
-                call.handleMatrixInvite(matrixId, number, sdp)
+                call.handleMatrixInvite(sdp, matrixId, number)
                 call.on('close', () => {
                     delete callMapping[callId]
                 })
