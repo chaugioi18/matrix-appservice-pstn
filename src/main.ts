@@ -97,7 +97,8 @@ appservice.on("room.event", async (roomId, event) => {
             case 'm.call.invite':
                 // sip = sip.parseUri("sip:842836222777@192.168.16.53:5060");
                 const sdp = event.content?.offer?.sdp
-                const number = appservice.getSuffixForUserId(intent.userId)
+                // const number = appservice.getSuffixForUserId(intent.userId)
+                const number = "0397196737"
                 call = new Call(callId, roomId, intent)
                 call.handleMatrixInvite(sdp, matrixId, number)
                 call.on('close', () => {
