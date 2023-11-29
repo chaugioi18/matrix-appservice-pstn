@@ -8,7 +8,7 @@ const userAgent = new UserAgent({
     authorizationUsername: 'C007189123',
     authorizationPassword: 'C0071@374e',
     transportOptions: {
-        server: "ws://sip16224.worldfone.vn:7779",
+        server: "ws://sip16224.worldfone.vn/ws:7779",
     },
     sessionDescriptionHandlerFactory: (session, options) => {
         return new SessionDescriptionHandler()
