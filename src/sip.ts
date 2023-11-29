@@ -4,11 +4,11 @@ import { Registerer, UserAgent, Invitation } from "sip.js";
 import SessionDescriptionHandler from './SessionDescriptionHandler';
 
 const userAgent = new UserAgent({
-    uri: UserAgent.makeURI("sip:1000@freeswitch"),
-    authorizationUsername: '1000',
-    authorizationPassword: 'HelloWorld',
+    uri: UserAgent.makeURI("sip:C007189123@sip16224.worldfone.vn"),
+    authorizationUsername: 'C007189123',
+    authorizationPassword: 'C0071@374e',
     transportOptions: {
-        server: "ws://127.0.0.1:5066",
+        server: "ws://sip16224.worldfone.vn:7779",
     },
     sessionDescriptionHandlerFactory: (session, options) => {
         return new SessionDescriptionHandler()
