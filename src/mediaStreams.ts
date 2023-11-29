@@ -1,4 +1,6 @@
-import wrtc, { MediaStream, RTCAudioSource, RTCAudioSink, RTCAudioData } from 'wrtc';
+import wrtc, { MediaStream } from 'wrtc';
+
+const { RTCAudioSource, RTCAudioSink, RTCAudioData } = wrtc.nonstandard;
 
 export default class webrtcMediaFactory {
     public invitingMediaStream: MediaStream;
