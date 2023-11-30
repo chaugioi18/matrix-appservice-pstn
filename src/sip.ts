@@ -4,7 +4,7 @@ import { Registerer, UserAgent, Invitation } from "sip.js";
 import SessionDescriptionHandler from './SessionDescriptionHandler';
 
 const userAgent = new UserAgent({
-    uri: UserAgent.makeURI("sip:C007189123@sip16224.worldfone.vn:7779"),
+    uri: UserAgent.makeURI("sip:C007189123@sip16224.worldfone.vn"),
     authorizationUsername: 'C007189123',
     authorizationPassword: 'C0071@374e',
     transportOptions: {
@@ -46,7 +46,7 @@ export function createUserAgent(onInvite: (invitation: Invitation) => Promise<vo
             } catch(err) {
                 console.log('ERROR', err.body)
             }
-            
+
         },
         async onDisconnect(err: Error) {
             if (err) {
