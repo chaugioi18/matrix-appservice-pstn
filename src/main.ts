@@ -16,7 +16,7 @@ const callMapping: {[callId: string]: Call} = {}
 async function onInvite(invitation: Invitation) {
     const matrixId = invitation.request.headers['X-Matrix-Id']?.[0]?.raw
     const callId = invitation.request.callId
-    
+
     // prepend contry code?
     let from = invitation.request.from.displayName
     if(from.startsWith('0') && !from.startsWith('00')) {
@@ -37,7 +37,7 @@ async function onInvite(invitation: Invitation) {
         return
     }
 
-    // get or create intent  
+    // get or create intent
     const intent = appservice.getIntentForSuffix(from)
     await intent.ensureRegistered()
     await intent.underlyingClient.setDisplayName(formatPhoneNumber(from));
@@ -87,7 +87,7 @@ appservice.on("room.event", async (roomId, event) => {
     }
 
     console.log(`Received event ${event["event_id"]} (${event["type"]}) from ${event["sender"]} in ${roomId}`);
-    
+
     const matrixId = event.sender
     const callId = event.content?.call_id
 
@@ -124,7 +124,10 @@ appservice.on("room.event", async (roomId, event) => {
             // matrix user accepts the out call invite
             case 'm.call.answer':
                 call = callMapping[callId]
-                if(!call) return
+                if(!call) {
+                    console.log('Call not match')
+                    return
+                }
                 await call.handleAnswer(event)
                 break
 
@@ -134,7 +137,7 @@ appservice.on("room.event", async (roomId, event) => {
                 if(!call) return
                 call.hangup()
                 break
-            
+
             case 'm.room.message':
                 console.log(`Received message ${event["event_id"]} from ${event["sender"]} in ${roomId}: ${event["content"]["body"]}`);
             }
@@ -147,8 +150,8 @@ async function main() {
     await userAgent.start()
     console.log('sip connected')
 
-    await appservice.begin()   
-    console.log('appservice is up!') 
+    await appservice.begin()
+    console.log('appservice is up!')
 }
 
 main()

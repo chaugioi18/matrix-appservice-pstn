@@ -183,11 +183,13 @@ export default class Call extends EventEmitter {
      * Forwards an matrix call accept event (m.call.answer) to SIP
      */
     async handleAnswer(event:  RoomEvent<any>) {
+        console.log("Handle m.call.answer")
         const callId  = event.content?.call_id
         const sdp: string  = event.content?.answer?.sdp
         if(!sdp || !callId) return
 
         const accept = async () => {
+            console.log("Start accept the call")
             await this.sipInvitation.accept({
                 sessionDescriptionHandlerOptions: {
                     constraints: {
@@ -201,8 +203,10 @@ export default class Call extends EventEmitter {
             this.isCallEstablished = true
         }
         if(sdp.includes('a=candidate:')) {
+            console.log("Accept the call")
             await accept()
         } else {
+            console.log("Wait for candidates")
             await this.waitForCandidates(accept)
         }
     }
