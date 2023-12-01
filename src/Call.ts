@@ -33,7 +33,7 @@ export default class Call extends EventEmitter {
             this.sdpCandidates += 'a='+c.candidate+'\r\n'
         }
         this.sdpCandidates += 'a=end-of-candidates\r\n'
-        
+
     }
     /**
      * Handle an Invitation by an matrix user
@@ -67,7 +67,7 @@ export default class Call extends EventEmitter {
                     }
                 }
             }, 100)
-    
+
             // timeout? -> hangup
             setTimeout( () => {
                 if(this.sdpCandidates) return
@@ -86,7 +86,7 @@ export default class Call extends EventEmitter {
             this.hangup()
             return
         }
-        const target = UserAgent.makeURI("sip:"+number+"@freeswitch");
+        const target = UserAgent.makeURI("sip:"+number+"@sip16224.worldfone.vn");
         this.inviter = new Inviter(this.sipUA, target, {
             extraHeaders: [
                 // currently not used by freeswitch, but maybe helpful at some point?
@@ -97,7 +97,7 @@ export default class Call extends EventEmitter {
                 fromDisplayName: matrixId
             },
             sessionDescriptionHandlerOptions: {
-                constraints: { 
+                constraints: {
                     offerSdp: sdp+this.sdpCandidates,
                     onResponse: this.onSipInviteResponse
                 }
@@ -129,7 +129,7 @@ export default class Call extends EventEmitter {
         })
         console.log('invited')
     }
-    
+
     /**
      * SIP user accepted the call, let's return that to
      * the matrix user
@@ -155,7 +155,7 @@ export default class Call extends EventEmitter {
     /**
      * Forwards an invite from SIP towards the Matrix User
      */
-    inviteMatrix(sipInvitation: Invitation) {   
+    inviteMatrix(sipInvitation: Invitation) {
         this.sipInvitation = sipInvitation
         this.sipInvitation.delegate = {
             onBye: () => this.hangup(null, true)
@@ -223,8 +223,8 @@ export default class Call extends EventEmitter {
                     this.inviter.cancel()
                     break
                 case SessionState.Established:
-                    this.inviter.bye()     
-                    break    
+                    this.inviter.bye()
+                    break
             }
         }
         if(!bySIP && this.sipInvitation) {
@@ -237,9 +237,9 @@ export default class Call extends EventEmitter {
             call_id: this.callId,
             // party_id: client.deviceId,
             version: 1,
-            reason 
+            reason
         }
-        
+
         this.sendMatrixEvent(type, content)
 
         // clean up
