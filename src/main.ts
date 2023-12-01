@@ -81,10 +81,6 @@ const appservice = createAppservice(APPSERVICE_CONFIG)
 appservice.on("room.event", async (roomId, event) => {
     console.log(`Received event ${event["event_id"]} (${event["type"]}) from ${event["sender"]} in ${roomId}`);
     // is it a event sent by the appservice?
-    if(appservice.getSuffixForUserId(event["sender"])) {
-        // ignore
-        return
-    }
 
     const matrixId = event.sender
     const callId = event.content?.call_id
