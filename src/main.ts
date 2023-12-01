@@ -121,7 +121,7 @@ appservice.on("room.event", async (roomId, event) => {
                     console.log('Call not match')
                     return
                 }
-                await call.handleAnswer(event)
+                // await call.handleAnswer(event)
                 break
 
             // matrix user hangs up the call

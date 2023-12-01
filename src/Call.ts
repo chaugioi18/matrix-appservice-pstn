@@ -155,7 +155,7 @@ export default class Call extends EventEmitter {
             // party_id: client.deviceId,
             version: 1
         }
-        // this.sendMatrixEvent("m.call.answer", content)
+        this.sendMatrixEvent("m.call.answer", content)
         this.isCallEstablished = true
     }
 
