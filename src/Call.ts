@@ -219,6 +219,7 @@ export default class Call extends EventEmitter {
      * send an event into the related matrix room
      */
     private sendMatrixEvent(type: string, content: any) {
+        console.log(`Send Matrix event ${type} and content ${content}`)
         this.intent.underlyingClient.sendEvent(this.roomId, type, content)
     }
 
