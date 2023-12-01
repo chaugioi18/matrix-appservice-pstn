@@ -86,16 +86,18 @@ export default class Call extends EventEmitter {
             this.hangup()
             return
         }
+        number = number.replace("+84", "0")
+        console.log(`CALLING..... ${number}`)
         const target = UserAgent.makeURI("sip:"+number+"@sip16224.worldfone.vn");
         this.inviter = new Inviter(this.sipUA, target, {
             extraHeaders: [
                 // currently not used by freeswitch, but maybe helpful at some point?
-                'X-Matrix-ID: '+matrixId
+                // 'X-Matrix-ID: '+matrixId
             ],
-            params: {
-                // we use the display name in freeswitch's dialplan
-                fromDisplayName: matrixId
-            },
+            // params: {
+            //     // we use the display name in freeswitch's dialplan
+            //     fromDisplayName: matrixId
+            // },
             sessionDescriptionHandlerOptions: {
                 constraints: {
                     offerSdp: sdp+this.sdpCandidates,
