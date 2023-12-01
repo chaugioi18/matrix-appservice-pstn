@@ -113,9 +113,9 @@ export default class Call extends EventEmitter {
         }
         await this.inviter.invite({
             requestDelegate: {
-                onAccept(response: IncomingResponse) {
-                    console.log(`Inviter accept call ${response}`)
-                },
+                // onAccept(response: IncomingResponse) {
+                //     console.log(`Inviter accept call ${response}`)
+                // },
                 onReject: ({message}) => {
                     if(message.statusCode === 486) {
                         // 486 Busy Here
@@ -141,6 +141,7 @@ export default class Call extends EventEmitter {
      * the matrix user
      */
     private onSipInviteResponse = (sdp: string) => {
+        console.log(`onSipInviteResponse`)
         const content = {
             answer: {
                 sdp,

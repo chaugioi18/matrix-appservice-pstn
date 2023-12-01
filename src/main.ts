@@ -84,7 +84,6 @@ appservice.on("room.event", async (roomId, event) => {
 
     const matrixId = event.sender
     const callId = event.content?.call_id
-
     // let's find an intent which is able to post in that room
     const intent = await getIntentInRoom(roomId, appservice)
     if(!intent) {
@@ -116,14 +115,14 @@ appservice.on("room.event", async (roomId, event) => {
                 break
 
             // // matrix user accepts the out call invite
-            case 'm.call.answer':
-                call = callMapping[callId]
-                if(!call) {
-                    console.log('Call not match')
-                    return
-                }
-                await call.handleAnswer(event)
-                break
+            // case 'm.call.answer':
+            //     call = callMapping[callId]
+            //     if(!call) {
+            //         console.log('Call not match')
+            //         return
+            //     }
+            //     await call.handleAnswer(event)
+            //     break
 
             // matrix user hangs up the call
             case 'm.call.hangup':
