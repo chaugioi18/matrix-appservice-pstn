@@ -2,6 +2,7 @@ import { Intent, RoomEvent } from 'matrix-bot-sdk';
 import { Inviter, SessionState, UserAgent } from "sip.js";
 import { Invitation } from 'sip.js/lib/api/invitation';
 import { EventEmitter } from "events";
+import {IncomingResponse} from "sip.js/lib/core";
 
 
 export default class Call extends EventEmitter {
@@ -112,6 +113,9 @@ export default class Call extends EventEmitter {
         }
         await this.inviter.invite({
             requestDelegate: {
+                onAccept(response: IncomingResponse) {
+                    console.log("Inviter accept call")
+                },
                 onReject: ({message}) => {
                     if(message.statusCode === 486) {
                         // 486 Busy Here
