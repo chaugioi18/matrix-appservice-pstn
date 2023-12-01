@@ -115,15 +115,15 @@ appservice.on("room.event", async (roomId, event) => {
                 await call.handleCandidates(event)
                 break
 
-            // matrix user accepts the out call invite
-            case 'm.call.answer':
-                call = callMapping[callId]
-                if(!call) {
-                    console.log('Call not match')
-                    return
-                }
-                await call.handleAnswer(event)
-                break
+            // // matrix user accepts the out call invite
+            // case 'm.call.answer':
+            //     call = callMapping[callId]
+            //     if(!call) {
+            //         console.log('Call not match')
+            //         return
+            //     }
+            //     await call.handleAnswer(event)
+            //     break
 
             // matrix user hangs up the call
             case 'm.call.hangup':

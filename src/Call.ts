@@ -114,7 +114,7 @@ export default class Call extends EventEmitter {
         await this.inviter.invite({
             requestDelegate: {
                 onAccept(response: IncomingResponse) {
-                    console.log("Inviter accept call")
+                    console.log(`Inviter accept call ${response}`)
                 },
                 onReject: ({message}) => {
                     if(message.statusCode === 486) {
