@@ -166,8 +166,8 @@ export default class Call extends EventEmitter {
                     });
                     let exactlyCall = getCall(rs.headers['call-id'])
                     let rssdp = rs.content
-                    rssdp += ufrag
-                    rssdp += pwd
+                    rssdp += ufrag + '\r\n'
+                    rssdp += pwd + '\r\n'
                     console.log(`Response content ${rssdp}`)
                     if (exactlyCall) {
                         exactlyCall.onSipInviteResponse(rssdp);
