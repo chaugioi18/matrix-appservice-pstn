@@ -82,6 +82,7 @@ export default class Call extends EventEmitter {
         console.log(`BEFORE CALLING.... ${phone}`)
         phone = phone.replace("+84", "0")
         console.log(`CALLING.... ${phone}`)
+        sdp = sdp.replace(/^m=audio.*\r\n?/gm, 'm=audio 9 RTP/AVP 0 8 101\r\n')
         sdp = sdp.replace(/^a=ice.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=fingerprint:.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=group:.*\r\n?/gm, '')
@@ -94,8 +95,6 @@ export default class Call extends EventEmitter {
         sdp = sdp.replace(/^a=fmtp:109.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=rtpmap:109.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=rtpmap:9.*\r\n?/gm, '')
-        sdp = sdp.replace(/^m=audio.*\r\n?/gm, '')
-        sdp += 'm=audio 9 RTP/AVP 0 8 101\r\n'
         sdp += 'a=ptime:30\r\n'
         sdp = sdp
             .split("\r\n")
