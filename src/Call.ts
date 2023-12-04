@@ -82,7 +82,6 @@ export default class Call extends EventEmitter {
         console.log(`BEFORE CALLING.... ${phone}`)
         phone = phone.replace("+84", "0")
         console.log(`CALLING.... ${phone}`)
-        if
         sdp = sdp.replace(/^a=ice.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=fingerprint:.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=group:.*\r\n?/gm, '')
