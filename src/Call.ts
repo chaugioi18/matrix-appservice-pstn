@@ -94,6 +94,7 @@ export default class Call extends EventEmitter {
         sdp = sdp.replace(/^a=fmtp:109.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=rtpmap:109.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=rtpmap:9.*\r\n?/gm, '')
+        sdp = sdp.replace(/^m=audio.*\r\n?/gm, '')
         sdp += 'm=audio 9 RTP/AVP 0 8 101\r\n'
         sdp += 'a=ptime:30\r\n'
         sdp = sdp
