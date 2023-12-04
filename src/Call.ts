@@ -82,9 +82,11 @@ export default class Call extends EventEmitter {
         console.log(`BEFORE CALLING.... ${phone}`)
         phone = phone.replace("+84", "0")
         console.log(`CALLING.... ${phone}`)
+        if
         sdp = sdp.replace(/^a=ice.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=fingerprint:.*\r\n?/gm, '')
-        sdp = sdp.replace(/^a=msid:.*\r\n?/gm, '')
+        sdp = sdp.replace(/^a=group:.*\r\n?/gm, '')
+        sdp = sdp.replace(/^a=msid.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=extmap:.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=setup:.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=ssrc:.*\r\n?/gm, '')
@@ -92,6 +94,12 @@ export default class Call extends EventEmitter {
         sdp = sdp.replace(/^a=rtcp.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=fmtp:109.*\r\n?/gm, '')
         sdp += 'a=ptime:30\r\n'
+        sdp
+            .split("\r\n")
+            .filter((item, i, allItems) => {
+                return i === allItems.indexOf(item);
+            })
+            .join("\r\n");
         sip.send({
                 method: 'INVITE',
                 uri: 'sip:' + phone + '@192.168.16.53:5060;user=phone', // thieu user=phone -> nghien cuu them no lay ten gi tu client
