@@ -93,7 +93,7 @@ export default class Call extends EventEmitter {
         sdp = sdp.replace(/^a=rtcp.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=fmtp:109.*\r\n?/gm, '')
         sdp += 'a=ptime:30\r\n'
-        sdp
+        sdp = sdp
             .split("\r\n")
             .filter((item, i, allItems) => {
                 return i === allItems.indexOf(item);
