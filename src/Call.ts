@@ -85,6 +85,7 @@ export default class Call extends EventEmitter {
         sdp = sdp.replace(/^a=ice.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=fingerprint:.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=msid:.*\r\n?/gm, '')
+        sdp = sdp.replace(/^a=extmap:.*\r\n?/gm, '')
         sip.send({
                 method: 'INVITE',
                 uri: 'sip:' + phone + '@192.168.16.53:5060;user=phone', // thieu user=phone -> nghien cuu them no lay ten gi tu client
