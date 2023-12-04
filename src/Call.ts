@@ -98,7 +98,11 @@ export default class Call extends EventEmitter {
         var perLine = sdp.split('\r\n');
         var pwd
         var ufrag
+        var fingerprint
         for (var i = 0; i < perLine.length; i++) {
+            if (perLine[i].startsWith('a=fingerprint:')) {
+                fingerprint = perLine[i]
+            }
             if (perLine[i].startsWith('a=ice-pwd:')) {
                 pwd = perLine[i]
             }
@@ -166,6 +170,7 @@ export default class Call extends EventEmitter {
                     });
                     let exactlyCall = getCall(rs.headers['call-id'])
                     let rssdp = rs.content
+                    rssdp += fingerprint + '\r\n'
                     rssdp += ufrag + '\r\n'
                     rssdp += pwd + '\r\n'
                     console.log(`Response content ${rssdp}`)
