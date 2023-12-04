@@ -83,7 +83,7 @@ export default class Call extends EventEmitter {
         phone = phone.replace("+84", "0")
         console.log(`CALLING.... ${phone}`)
         console.log(`BEFORE CALL SDP ${sdp}`)
-        sdp = sdp.replace(/^a=ice.*\n?/gm, '')
+        sdp = sdp.replace(/^a=ice.*\r\n?/gm, '')
         console.log(`PREPARE CALL SDP ${sdp}`)
         sip.send({
                 method: 'INVITE',
