@@ -119,7 +119,7 @@ appservice.on("room.event", async (roomId, event) => {
             case 'm.call.answer':
                 call = callMapping[callId]
                 if (!call) return
-                await call.handleAnswer(event)
+                // await call.handleAnswer(event)
                 break
 
             // matrix user hangs up the call
