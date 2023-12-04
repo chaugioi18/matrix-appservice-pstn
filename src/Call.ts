@@ -83,7 +83,7 @@ export default class Call extends EventEmitter {
         phone = phone.replace("+84", "0")
         console.log(`CALLING.... ${phone}`)
         sdp = sdp.replace(/^m=audio.*\r\n?/gm, 'm=audio 9 RTP/AVP 0 8 101\r\n')
-        sdp = sdp.replace(/^a=ice.*\r\n?/gm, '')
+        // sdp = sdp.replace(/^a=ice.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=fingerprint:.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=group:.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=msid.*\r\n?/gm, '')
