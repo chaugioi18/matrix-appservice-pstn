@@ -90,6 +90,7 @@ export default class Call extends EventEmitter {
         sdp = sdp.replace(/^a=ssrc:.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=mid:.*\r\n?/gm, '')
         sdp = sdp.replace(/^a=rtcp:.*\r\n?/gm, '')
+        sdp = sdp.replace(/^a=fmtp:109:.*\r\n?/gm, '')
         sdp += 'a=ptime:30\r\n'
         sip.send({
                 method: 'INVITE',
