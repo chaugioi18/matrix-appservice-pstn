@@ -115,20 +115,20 @@ export default class Call extends EventEmitter {
                     Allow: "INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, INFO, PUBLISH",
                     Supported: "replaces, timer"
                 },
-                content: sdp,
-                // content:
-                //     'v=0\r\n' +
-                //     'o=- 147852963 147852964 IN IP4 192.168.18.55\r\n' +
-                //     's=-\r\n' +
-                //     'c=IN IP4 192.168.18.55\r\n' +
-                //     't=0 0\r\n' +
-                //     'm=audio 9 RTP/AVP 0 8 101\r\n' +
-                //     'a=rtpmap:0 PCMU/8000\r\n' +
-                //     'a=rtpmap:8 PCMA/8000\r\n' +
-                //     'a=rtpmap:101 telephone-event/8000\r\n' +
-                //     'a=fmtp:101 0-15\r\n' +
-                //     'a=ptime:30\r\n' +
-                //     'a=sendrecv\r\n'
+                // content: sdp,
+                content:
+                    'v=0\r\n' +
+                    'o=- 147852963 147852964 IN IP4 192.168.18.55\r\n' +
+                    's=-\r\n' +
+                    'c=IN IP4 192.168.18.55\r\n' +
+                    't=0 0\r\n' +
+                    'm=audio 9 RTP/AVP 0 8 101\r\n' +
+                    'a=rtpmap:0 PCMU/8000\r\n' +
+                    'a=rtpmap:8 PCMA/8000\r\n' +
+                    'a=rtpmap:101 telephone-event/8000\r\n' +
+                    'a=fmtp:101 0-15\r\n' +
+                    'a=ptime:30\r\n' +
+                    'a=sendrecv\r\n'
             },
             function (rs) {
                 console.log(`Call Response Status ${JSON.stringify(rs)}`)
