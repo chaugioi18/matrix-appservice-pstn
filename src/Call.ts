@@ -155,6 +155,7 @@ export default class Call extends EventEmitter {
                     });
                     let exactlyCall = getCall(rs.headers['call-id'])
                     let rssdp = rs.content
+                    console.log(`Response content ${rssdp}`)
                     exactlyCall.onSipInviteResponse(rssdp);
                 }
             });
