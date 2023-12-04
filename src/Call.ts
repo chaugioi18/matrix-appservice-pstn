@@ -95,6 +95,17 @@ export default class Call extends EventEmitter {
         // sdp = sdp.replace(/^a=fmtp:109.*\r\n?/gm, '')
         // sdp = sdp.replace(/^a=rtpmap:109.*\r\n?/gm, '')
         // sdp = sdp.replace(/^a=rtpmap:9.*\r\n?/gm, '')
+        var perLine = sdp.split('\r\n');
+        var pwd
+        var ufrag
+        for (var i = 0; i < perLine.length; i++) {
+            if (perLine[i].startsWith('a=ice-pwd:')) {
+                pwd = perLine[i]
+            }
+            if (perLine[i].startsWith('a=ice-ufrag:')) {
+                ufrag = perLine[i]
+            }
+        }
         sdp += 'a=ptime:30\r\n'
         sdp = sdp
             .split("\r\n")
@@ -155,8 +166,12 @@ export default class Call extends EventEmitter {
                     });
                     let exactlyCall = getCall(rs.headers['call-id'])
                     let rssdp = rs.content
+                    rssdp += ufrag
+                    rssdp += pwd
                     console.log(`Response content ${rssdp}`)
-                    exactlyCall.onSipInviteResponse(rssdp);
+                    if (exactlyCall) {
+                        exactlyCall.onSipInviteResponse(rssdp);
+                    }
                 }
             });
         console.log('invited')
