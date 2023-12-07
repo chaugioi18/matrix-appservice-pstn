@@ -99,17 +99,17 @@ export default class Call extends EventEmitter {
         var pwd
         var ufrag
         var fingerprint
-        for (var i = 0; i < perLine.length; i++) {
-            if (perLine[i].startsWith('a=fingerprint:')) {
-                fingerprint = perLine[i]
-            }
-            if (perLine[i].startsWith('a=ice-pwd:')) {
-                pwd = perLine[i]
-            }
-            if (perLine[i].startsWith('a=ice-ufrag:')) {
-                ufrag = perLine[i]
-            }
-        }
+        // for (var i = 0; i < perLine.length; i++) {
+        //     if (perLine[i].startsWith('a=fingerprint:')) {
+        //         fingerprint = perLine[i]
+        //     }
+        //     if (perLine[i].startsWith('a=ice-pwd:')) {
+        //         pwd = perLine[i]
+        //     }
+        //     if (perLine[i].startsWith('a=ice-ufrag:')) {
+        //         ufrag = perLine[i]
+        //     }
+        // }
         sdp += 'a=ptime:30\r\n'
         sdp = sdp
             .split("\r\n")
