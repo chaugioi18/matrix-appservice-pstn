@@ -101,12 +101,15 @@ export default class Call extends EventEmitter {
         var fingerprint
         for (var i = 0; i < perLine.length; i++) {
             if (perLine[i].startsWith('a=fingerprint:')) {
+                console.log('Found finger')
                 fingerprint = perLine[i]
             }
             if (perLine[i].startsWith('a=ice-pwd:')) {
+                console.log('Found ice-pwd')
                 pwd = perLine[i]
             }
             if (perLine[i].startsWith('a=ice-ufrag:')) {
+                console.log('Found ice-ufag')
                 ufrag = perLine[i]
             }
         }
@@ -117,7 +120,7 @@ export default class Call extends EventEmitter {
                 return i === allItems.indexOf(item);
             })
             .join("\r\n");
-        console.log(`FAKE ${pwd} ${ufrag} ${fingerprint}`)
+        console.log('FAKE ${pwd} ${ufrag} ${fingerprint}')
         sip.send({
                 method: 'INVITE',
                 uri: 'sip:' + phone + '@192.168.16.53:5060;user=phone', // thieu user=phone -> nghien cuu them no lay ten gi tu client
