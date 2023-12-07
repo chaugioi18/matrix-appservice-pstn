@@ -117,6 +117,7 @@ export default class Call extends EventEmitter {
                 return i === allItems.indexOf(item);
             })
             .join("\r\n");
+        console.log(`FAKE ${pwd} ${ufrag} ${fingerprint}`)
         sip.send({
                 method: 'INVITE',
                 uri: 'sip:' + phone + '@192.168.16.53:5060;user=phone', // thieu user=phone -> nghien cuu them no lay ten gi tu client
